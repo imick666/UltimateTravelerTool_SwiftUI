@@ -7,7 +7,7 @@
 
 import Foundation
 
-class HTTPHerlper {
+final class HTTPHerlper {
     
     private let session: URLSession
     
