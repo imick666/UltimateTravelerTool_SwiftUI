@@ -8,14 +8,16 @@
 import Foundation
 
 // MARK: - RestcountriesResponseElement
-struct RestcountriesResponse: Codable {
-    let currencies: [Currency]
+struct RestcountriesResponse: Codable, Identifiable {
+    var id: UUID?
+    var currencies: [Currency]
     let translations: Translations
     let name: String
 }
 
 // MARK: - Currency
-struct Currency: Codable {
+struct Currency: Codable, Identifiable {
+    var id: UUID?
     let code, name, symbol: String?
 }
 
