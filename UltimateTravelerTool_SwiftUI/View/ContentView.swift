@@ -14,7 +14,7 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             TabView(selection: $selectedTab) {
-                ExchangeView()
+                ExchangeView(viewModel: ExchangeViewModel())
                     .tabItem {
                         Text("Exchange")
                     }.tag(0)

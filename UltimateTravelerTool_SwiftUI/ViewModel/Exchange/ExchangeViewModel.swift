@@ -2,39 +2,51 @@
 //  ExchangeViewModel.swift
 //  UltimateTravelerTool_SwiftUI
 //
-//  Created by mickael ruzel on 27/02/2021.
+//  Created by mickael ruzel on 28/02/2021.
 //
 
 import SwiftUI
 
 final class ExchangeViewModel: ObservableObject {
     
+    @Published var amourOne = ""
     @Published var currencyOne: Currency?
+    @Published var amountTwo = ""
     @Published var currencyTwo: Currency?
-    @Published var result = ""
-    @Published var error = ""
     
-    private var formatter = NumberFormatter()
-    private var fixer = FixerFetcher()
+    private var restCountriesFetcher = RestcountriesFetcher()
+    private var fixerFetcher = FixerFetcher()
+    private var countriesList = [RestcountriesResponse]()
     
+    var countries: [RestcountriesResponse] {
+        fetchCountries()
+        
+        return []
+    }
+    var currencies: [Currency] {
+        fetchCountries()
+        
+        return []
+    }
     
-    func makeCalcul(amount: String) {
-        guard let amount = Double(amount) else {
-            error = "error"
+    private func fetchCountries() {
+        guard countriesList.isEmpty else {
             return
         }
-        fixer.calculExchange(of: amount, from: currencyTwo!.code!, to: currencyTwo!.code!) { result in
+        
+        restCountriesFetcher.getCurrenciesList { (result) in
             DispatchQueue.main.async {
                 switch result {
-                case .failure(let error): self.error = error.localizedDescription
-                case .success(let toAmount):
-                    self.formatter.numberStyle = .currency
-                    self.formatter.locale = Locale.current
-                    self.result = self.formatter.string(from: NSNumber(value: toAmount))!
+                case .success(let data): self.countriesList = data
+                case .failure(_): return
                 }
             }
-            
+
         }
+    }
+    
+    private func fetchFixer() {
+        
     }
     
 }

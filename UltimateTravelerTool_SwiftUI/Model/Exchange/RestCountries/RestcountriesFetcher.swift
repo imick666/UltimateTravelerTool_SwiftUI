@@ -38,6 +38,5 @@ final class RestcountriesFetcher {
         ]
         
         return components
-    
     }
 }

@@ -2,32 +2,28 @@
 //  ExchangeView.swift
 //  UltimateTravelerTool_SwiftUI
 //
-//  Created by mickael ruzel on 27/02/2021.
+//  Created by mickael ruzel on 28/02/2021.
 //
 
 import SwiftUI
 
 struct ExchangeView: View {
     
-    @StateObject var exchangeViewModel = ExchangeViewModel()
+    @ObservedObject var viewModel: ExchangeViewModel
     
     var body: some View {
         VStack {
+            CurrencyView(viewModel: viewModel, amount: $viewModel.amourOne, currency: $viewModel.currencyOne)
+                
+            Divider()
             
-            CurrencyView()
-            
-            ZStack {
-                Divider()
-            }
-            
-            
-            CurrencyView()
+            CurrencyView(viewModel: viewModel, amount: $viewModel.amountTwo, currency: $viewModel.currencyTwo)
         }
     }
 }
 
 struct ExchangeView_Previews: PreviewProvider {
     static var previews: some View {
-        ExchangeView()
+        ExchangeView(viewModel: ExchangeViewModel())
     }
 }
