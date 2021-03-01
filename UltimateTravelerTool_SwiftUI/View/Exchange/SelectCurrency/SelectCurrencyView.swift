@@ -13,6 +13,7 @@ struct SelectCurrencyView: View {
     
     @ObservedObject var viewModel: ExchangeViewModel
     @State var pickerSelection = 0
+    var id: Int
     
     var body: some View {
         VStack {
@@ -28,12 +29,15 @@ struct SelectCurrencyView: View {
             
             switch pickerSelection {
             case 0:
-                CountryListView(countries: viewModel.countries) { currency in
+                CountryListView(countries: viewModel.countriesList) { currency in
+                    viewModel.currencies[id] = currency
                     presentaion.wrappedValue.dismiss()
+                    
                 }
                 .navigationTitle("Select a country")
             default:
-                CurrencyListView(currencies: viewModel.currencies) { currency in
+                CurrencyListView(currencies: viewModel.currenciesList) { currency in
+                    viewModel.currencies[id] = currency
                     presentaion.wrappedValue.dismiss()
                 }
                 .navigationTitle("Select a currency")
@@ -44,6 +48,6 @@ struct SelectCurrencyView: View {
 
 struct SelectCurrencyView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectCurrencyView(viewModel: ExchangeViewModel())
+        SelectCurrencyView(viewModel: ExchangeViewModel(), id: 0)
     }
 }

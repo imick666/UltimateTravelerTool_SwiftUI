@@ -13,11 +13,39 @@ struct ExchangeView: View {
     
     var body: some View {
         VStack {
-            CurrencyView(viewModel: viewModel, amount: $viewModel.amourOne, currency: $viewModel.currencyOne)
-                
-            Divider()
+            ForEach(0 ..< viewModel.numberOfCurrencies, id: \.self) { (index) in
+                CurrencyView(viewModel: viewModel, amount: $viewModel.amount[index], currency: $viewModel.currencies[index], id: index)
+                if index != viewModel.numberOfCurrencies - 1 { Divider() }
+            }
             
-            CurrencyView(viewModel: viewModel, amount: $viewModel.amountTwo, currency: $viewModel.currencyTwo)
+            Spacer()
+            
+            HStack {
+                
+                Button(action: {
+                    viewModel.lessCurrency()
+                }, label: {
+                    Text("-")
+                })
+                .padding()
+                .foregroundColor(.secondary)
+                .background(Color.gray)
+                .clipShape(Circle())
+                .padding(.leading)
+                
+                Spacer()
+                
+                Button(action: {
+                    viewModel.plusCurrency()
+                }, label: {
+                    Text("+")
+                })
+                .padding()
+                .foregroundColor(.secondary)
+                .background(Color.gray)
+                .clipShape(Circle())
+                .padding(.trailing)
+            }
         }
     }
 }

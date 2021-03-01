@@ -13,6 +13,7 @@ struct CurrencyView: View {
     @Binding var amount: String
     @Binding var currency: Currency?
     @State var selectCurrencyIdActive = false
+    var id: Int
     
     var body: some View {
         VStack(alignment: .center) {
@@ -21,21 +22,9 @@ struct CurrencyView: View {
             TextField("0.00", text: $amount)
                 .multilineTextAlignment(.center)
                 .font(.largeTitle)
-//            NavigationLink(
-//                destination: SelectCurrencyView(viewModel: viewModel),
-//                label: {
-//                    Text(currency?.code ?? "Select a currency")
-//                        .font(.title2)
-//                        .foregroundColor(.white)
-//                        .frame(minWidth: 150)
-//                        .padding()
-//                        .background(Color.blue)
-//                        .clipShape(Capsule())
-//                        
-//                })
             
             NavigationLink(
-                destination: SelectCurrencyView(viewModel: viewModel),
+                destination: SelectCurrencyView(viewModel: viewModel, id: id),
                 isActive: $selectCurrencyIdActive,
                 label: {
                     Text(currency?.code ?? "Select a currency")
@@ -54,6 +43,6 @@ struct CurrencyView: View {
 
 struct CurrencyView_Previews: PreviewProvider {
     static var previews: some View {
-        CurrencyView(viewModel: ExchangeViewModel(), amount: .constant(""), currency: .constant(nil))
+        CurrencyView(viewModel: ExchangeViewModel(), amount: .constant(""), currency: .constant(nil), id: 0)
     }
 }
