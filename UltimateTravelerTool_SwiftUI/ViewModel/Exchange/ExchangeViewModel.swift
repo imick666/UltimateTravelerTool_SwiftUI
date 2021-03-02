@@ -11,31 +11,28 @@ final class ExchangeViewModel: ObservableObject {
     
     // MARK: - Properties
     
-    @Published var amount = ["", ""] {
-        didSet {
-            print(amount)
-        }
-    }
-    @Published var currencies: [Currency?] = [nil, nil] {
-        didSet {
-            print(currencies)
-        }
-    }
-    
+    @Published var amount = ["", ""]
+    @Published var currencies: [Currency?] = [nil, nil]
     @Published var numberOfCurrencies = 2
     
     private var restCountriesFetcher = RestcountriesFetcher()
     private var fixerFetcher = FixerFetcher()
     private var restCountriesResult = [RestcountriesResponse]()
-    private var rateList: FixerResponse?
+    private var fixerResult: FixerResponse?
+    private var formatter = NumberFormatter()
     
     var countriesList: [RestcountriesResponse] {
-        fetchCountries()
         return sortCountries()
     }
     var currenciesList: [Currency] {
-        fetchCountries()
         return sortCurrencies()
+    }
+    
+    // MARK: - Init
+    
+    init() {
+        fetchFixer()
+        fetchCountries()
     }
     
     // MARK: - Methodes
@@ -56,6 +53,38 @@ final class ExchangeViewModel: ObservableObject {
     }
     
     
+    func executeExchange(for id: Int) {
+        guard let amount = Double(amount[id]) else {
+            self.amount.enumerated().forEach { index, _ in
+                self.amount[index] = ""
+            }
+            return
+        }
+        
+        formatter.numberStyle = .currency
+        formatter.locale = Locale.current
+        
+        for (index, currency) in currencies.enumerated() where index != id && currency != nil {
+            
+            guard let fromCode = currencies[id]?.code, let toCode = currency?.code else {
+                print("code invalide")
+                return
+            }
+            guard let fromRate = fixerResult?.rates[fromCode], let toRate = fixerResult?.rates[toCode] else {
+                print("rate invalide")
+                return
+            }
+            
+            let amountInEuro = amount / fromRate
+            
+            let result = amountInEuro * toRate
+            
+            formatter.currencyCode = currency?.code
+            
+            self.amount[index] = formatter.string(for: result)!
+        }
+    }
+    
     private func fetchCountries() {
         guard restCountriesResult.isEmpty else {
             return
@@ -71,13 +100,20 @@ final class ExchangeViewModel: ObservableObject {
 
         }
     }
-    
+
     private func fetchFixer() {
-        guard rateList == nil else {
+        guard fixerResult == nil else {
             return
         }
         
-        
+        fixerFetcher.getExchanges { (result) in
+            DispatchQueue.main.async {
+                switch result {
+                case.failure(_): return
+                case .success(let data): self.fixerResult = data
+                }
+            }
+        }
     }
     
     private func sortCountries() -> [RestcountriesResponse] {

@@ -10,39 +10,13 @@ import Foundation
 final class FixerFetcher {
     
     private let httpHelper: HTTPHerlper
-    private let formatter = NumberFormatter()
     
     init(httpHelper: HTTPHerlper = HTTPHerlper()) {
         self.httpHelper = httpHelper
+        
     }
     
-    private var rateList: FixerResponse?
-    
-    func calculExchange(of amount: Double, from: String, to: String, completionHandler: @escaping (Result<Double, HTTPError>) -> Void) {
-        getExchanges { (result) in
-            switch result {
-            case .failure(let error): completionHandler(.failure(error))
-            case .success(let data): self.rateList = data
-            }
-        }
-        
-        formatter.locale = Locale.current
-        formatter.numberStyle = .currency
-        
-        guard let fromRate = rateList?.rates[from],
-              let toRate = rateList?.rates[to] else { return }
-        
-        let amountInEuro = amount / fromRate
-
-        
-        completionHandler(.success(amountInEuro * toRate))
-    }
-    
-    private func getExchanges(completionHandler: @escaping (Result<FixerResponse, HTTPError>) -> Void) {
-        guard rateList == nil else {
-            completionHandler(.success(rateList!))
-            return
-        }
+    func getExchanges(completionHandler: @escaping (Result<FixerResponse, HTTPError>) -> Void) {
         guard let url = getUrl().url else {
             completionHandler(.failure(.badUrl))
             return

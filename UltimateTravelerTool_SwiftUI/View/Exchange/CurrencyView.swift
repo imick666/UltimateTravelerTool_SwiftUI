@@ -10,24 +10,26 @@ import SwiftUI
 struct CurrencyView: View {
     
     @ObservedObject var viewModel: ExchangeViewModel
-    @Binding var amount: String
-    @Binding var currency: Currency?
     @State var selectCurrencyIdActive = false
     var id: Int
+    @State var isEditing = false
     
     var body: some View {
         VStack(alignment: .center) {
             Spacer()
             
-            TextField("0.00", text: $amount)
+            TextField("0.00", text: $viewModel.amount[id], onEditingChanged: { (changed) in
+                isEditing = changed
+            })
                 .multilineTextAlignment(.center)
                 .font(.largeTitle)
+                .keyboardType(.decimalPad)
             
             NavigationLink(
                 destination: SelectCurrencyView(viewModel: viewModel, id: id),
                 isActive: $selectCurrencyIdActive,
                 label: {
-                    Text(currency?.code ?? "Select a currency")
+                    Text(viewModel.currencies[id]?.code ?? "Select a currency")
                         .font(.title2)
                         .foregroundColor(.white)
                         .frame(minWidth: 150)
@@ -38,11 +40,15 @@ struct CurrencyView: View {
             
             Spacer()
         }
+        .onChange(of: viewModel.amount[id], perform: { _ in
+            guard isEditing else { return }
+            viewModel.executeExchange(for: id)
+        })
     }
 }
 
 struct CurrencyView_Previews: PreviewProvider {
     static var previews: some View {
-        CurrencyView(viewModel: ExchangeViewModel(), amount: .constant(""), currency: .constant(nil), id: 0)
+        CurrencyView(viewModel: ExchangeViewModel(), id: 0)
     }
 }
