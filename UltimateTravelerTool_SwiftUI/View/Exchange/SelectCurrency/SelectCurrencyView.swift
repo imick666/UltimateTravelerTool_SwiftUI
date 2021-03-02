@@ -29,20 +29,24 @@ struct SelectCurrencyView: View {
             
             switch pickerSelection {
             case 0:
-                CountryListView(countries: viewModel.countriesList) { currency in
+                CountryListView(viewModel: viewModel) { currency in
                     viewModel.currencies[id] = currency
                     presentaion.wrappedValue.dismiss()
                     
                 }
                 .navigationTitle("Select a country")
             default:
-                CurrencyListView(currencies: viewModel.currenciesList) { currency in
+                CurrencyListView(viewModel: viewModel) { currency in
                     viewModel.currencies[id] = currency
                     presentaion.wrappedValue.dismiss()
                 }
                 .navigationTitle("Select a currency")
             }
         }
+        .onAppear(perform: {
+            viewModel.getCountries()
+            viewModel.getCurrecnies()
+        })
     }
 }
 

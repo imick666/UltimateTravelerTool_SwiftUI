@@ -14,19 +14,15 @@ final class ExchangeViewModel: ObservableObject {
     @Published var amount = ["", ""]
     @Published var currencies: [Currency?] = [nil, nil]
     @Published var numberOfCurrencies = 2
+    @Published var countriesList = [RestcountriesResponse]()
+    @Published var currenciesList = [Currency]()
     
     private var restCountriesFetcher = RestcountriesFetcher()
     private var fixerFetcher = FixerFetcher()
-    private var restCountriesResult = [RestcountriesResponse]()
     private var fixerResult: FixerResponse?
     private var formatter = NumberFormatter()
     
-    var countriesList: [RestcountriesResponse] {
-        return sortCountries()
-    }
-    var currenciesList: [Currency] {
-        return sortCurrencies()
-    }
+    
     
     // MARK: - Init
     
@@ -52,6 +48,30 @@ final class ExchangeViewModel: ObservableObject {
         }
     }
     
+    func getCountries() {
+        guard countriesList.isEmpty else { return }
+        restCountriesFetcher.getCountries { (result) in
+            DispatchQueue.main.async {
+                switch result {
+                case .failure(_): return
+                case .success(let data): self.countriesList = data
+                }
+            }
+        }
+    }
+    
+    func getCurrecnies() {
+        guard currenciesList.isEmpty else { return }
+        
+        restCountriesFetcher.getCurrencies { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .failure(_): return
+                case .success(let data): self.currenciesList = data
+                }
+            }
+        }
+    }
     
     func executeExchange(for id: Int) {
         guard let amount = Double(amount[id]) else {
@@ -85,33 +105,6 @@ final class ExchangeViewModel: ObservableObject {
         }
 
     }
-    
-//    private func fetchCountries() {
-//        guard restCountriesResult.isEmpty else {
-//            return
-//        }
-//
-//        restCountriesFetcher.fetchRestcountries { (result) in
-//            DispatchQueue.main.async {
-//                switch result {
-//                case .success(let data):
-//                    var result = [RestcountriesResponse]()
-//
-//                    data.forEach { country in
-//                        var country = country
-//                        country.currencies.removeAll(where: { $0.code == nil || $0.code?.count != 3 })
-//
-//                        result.append(country)
-//                    }
-//
-//                    self.restCountriesResult = result
-//
-//                case .failure(_): return
-//                }
-//            }
-//
-//        }
-//    }
 
     private func fetchFixer() {
         guard fixerResult == nil else {
@@ -128,37 +121,6 @@ final class ExchangeViewModel: ObservableObject {
         }
     }
     
-    private func sortCountries() -> [RestcountriesResponse] {
-        var result = [RestcountriesResponse]()
-        restCountriesResult.forEach { country in
-            var country = country
-            country.id = UUID()
-            for (index, currency) in country.currencies.enumerated() {
-                var currency = currency
-                currency.id = UUID()
-                country.currencies[index] = currency
-            }
-            country.currencies.removeAll(where: { $0.code == nil })
-            country.currencies.removeAll(where: {$0.name == nil })
-            country.currencies.sort(by: {$0.name! < $1.name! })
-            result.append(country)
-        }
-        
-        return result.sorted(by: {$0.name < $1.name })
-    }
     
-    private func sortCurrencies() -> [Currency] {
-        var result = [Currency]()
-        
-        restCountriesResult.forEach { country in
-            for currency in country.currencies where !result.contains(where: { $0.code == currency.code }){
-                var currency = currency
-                currency.id = UUID()
-                result.append(currency)
-            }
-        }
-        
-        return result.sorted(by: {$0.name! < $1.name! })
-    }
     
 }

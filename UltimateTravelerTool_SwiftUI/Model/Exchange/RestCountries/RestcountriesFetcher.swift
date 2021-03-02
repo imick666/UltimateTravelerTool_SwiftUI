@@ -50,10 +50,15 @@ final class RestcountriesFetcher {
         var sorted = [Currency]()
         
         countries.forEach { country in
-            country.currencies.forEach({ sorted.append($0) })
+            
+            country.currencies.forEach { currency in
+                guard !sorted.contains(where: {$0.code == currency.code}) else { return }
+                sorted.append(currency)
+            }
         }
         
-        return sorted.sorted(by: { $0.code != $1.code }).sorted(by: { $0.name! < $1.name! })
+        sorted.sort(by: { $0.name! < $1.name! })
+        return sorted
     }
     
     private func cleanFetchResult(_ fetchResult: [RestcountriesResponse]) -> [RestcountriesResponse] {
@@ -79,6 +84,8 @@ final class RestcountriesFetcher {
     
     private func fetchRestcountries(completionHandler: @escaping (Result<[RestcountriesResponse], HTTPError>) -> Void) {
         guard fetchResult.isEmpty else { return }
+        
+        print("fetch")
         
         guard let url = getUrl().url else {
             completionHandler(.failure(.badUrl))
