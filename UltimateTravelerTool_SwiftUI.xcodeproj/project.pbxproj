@@ -17,7 +17,6 @@
 		E02F06F325E94578004A1748 /* MokeURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F06F225E94578004A1748 /* MokeURLSession.swift */; };
 		E02F070525E965CA004A1748 /* Fixer.json in Resources */ = {isa = PBXBuildFile; fileRef = E02F070425E965CA004A1748 /* Fixer.json */; };
 		E02F070D25E965DD004A1748 /* FixerFakeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F070C25E965DD004A1748 /* FixerFakeResponse.swift */; };
-		E02F071225E965FD004A1748 /* FixerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F071125E965FD004A1748 /* FixerTest.swift */; };
 		E02F071825E9662A004A1748 /* RestcountriesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F071725E9662A004A1748 /* RestcountriesTest.swift */; };
 		E02F072025E9663C004A1748 /* RestcountriesFakeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F071F25E9663C004A1748 /* RestcountriesFakeResponse.swift */; };
 		E02F072525E9664B004A1748 /* Restcountries.json in Resources */ = {isa = PBXBuildFile; fileRef = E02F072425E9664B004A1748 /* Restcountries.json */; };
@@ -35,6 +34,7 @@
 		E0CA5AF325EC048000F1449B /* SelectCurrencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0CA5AF225EC048000F1449B /* SelectCurrencyView.swift */; };
 		E0CA5AF825EC07C800F1449B /* CountryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0CA5AF725EC07C800F1449B /* CountryListView.swift */; };
 		E0CA5AFD25EC0BD600F1449B /* CurrencyListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0CA5AFC25EC0BD600F1449B /* CurrencyListView.swift */; };
+		E0E8C97025EE8278003F521D /* View+UIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E8C96F25EE8278003F521D /* View+UIApplication.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +89,7 @@
 		E0CA5AF225EC048000F1449B /* SelectCurrencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectCurrencyView.swift; sourceTree = "<group>"; };
 		E0CA5AF725EC07C800F1449B /* CountryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryListView.swift; sourceTree = "<group>"; };
 		E0CA5AFC25EC0BD600F1449B /* CurrencyListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyListView.swift; sourceTree = "<group>"; };
+		E0E8C96F25EE8278003F521D /* View+UIApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+UIApplication.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				E02F06E325E93C07004A1748 /* Parsing.swift */,
+				E0E8C96F25EE8278003F521D /* View+UIApplication.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -273,8 +275,8 @@
 		E0A8FCB125E56600001783D3 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				E05793E825EA35A000F060EB /* Exchange */,
 				E0A8FC8525E565EE001783D3 /* ContentView.swift */,
+				E05793E825EA35A000F060EB /* Exchange */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -455,6 +457,7 @@
 				E0A8FCC625E566B8001783D3 /* APIConfigs.swift in Sources */,
 				E0CA5AF825EC07C800F1449B /* CountryListView.swift in Sources */,
 				E02F06DE25E93A14004A1748 /* RestcountriesResponse.swift in Sources */,
+				E0E8C97025EE8278003F521D /* View+UIApplication.swift in Sources */,
 				E02F06E425E93C07004A1748 /* Parsing.swift in Sources */,
 				E02F06E925E93FE4004A1748 /* FixerFetcher.swift in Sources */,
 				E0CA5AE325EBF4C000F1449B /* CurrencyView.swift in Sources */,
@@ -471,7 +474,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E02F071825E9662A004A1748 /* RestcountriesTest.swift in Sources */,
-				E02F071225E965FD004A1748 /* FixerTest.swift in Sources */,
 				E02F070D25E965DD004A1748 /* FixerFakeResponse.swift in Sources */,
 				E02F06F325E94578004A1748 /* MokeURLSession.swift in Sources */,
 				E02F072025E9663C004A1748 /* RestcountriesFakeResponse.swift in Sources */,

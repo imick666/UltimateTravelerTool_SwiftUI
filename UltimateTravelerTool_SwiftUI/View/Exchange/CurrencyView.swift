@@ -16,6 +16,7 @@ struct CurrencyView: View {
     
     var body: some View {
         VStack(alignment: .center) {
+            
             Spacer()
             
             TextField("0.00", text: $viewModel.amount[id], onEditingChanged: { (changed) in
@@ -37,13 +38,16 @@ struct CurrencyView: View {
                         .background(Color.blue)
                         .clipShape(Capsule())
                 })
+                .border(Color.blue, width: 1)
             
             Spacer()
         }
+        .border(Color.red, width: 1)
         .onChange(of: viewModel.amount[id], perform: { _ in
             guard isEditing else { return }
             viewModel.executeExchange(for: id)
         })
+        
     }
 }
 

@@ -32,7 +32,7 @@ final class ExchangeViewModel: ObservableObject {
     
     init() {
         fetchFixer()
-        fetchCountries()
+//        fetchCountries()
     }
     
     // MARK: - Methodes
@@ -83,23 +83,35 @@ final class ExchangeViewModel: ObservableObject {
             
             self.amount[index] = formatter.string(for: result)!
         }
+
     }
     
-    private func fetchCountries() {
-        guard restCountriesResult.isEmpty else {
-            return
-        }
-        
-        restCountriesFetcher.getCurrenciesList { (result) in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let data): self.restCountriesResult = data
-                case .failure(_): return
-                }
-            }
-
-        }
-    }
+//    private func fetchCountries() {
+//        guard restCountriesResult.isEmpty else {
+//            return
+//        }
+//
+//        restCountriesFetcher.fetchRestcountries { (result) in
+//            DispatchQueue.main.async {
+//                switch result {
+//                case .success(let data):
+//                    var result = [RestcountriesResponse]()
+//
+//                    data.forEach { country in
+//                        var country = country
+//                        country.currencies.removeAll(where: { $0.code == nil || $0.code?.count != 3 })
+//
+//                        result.append(country)
+//                    }
+//
+//                    self.restCountriesResult = result
+//
+//                case .failure(_): return
+//                }
+//            }
+//
+//        }
+//    }
 
     private func fetchFixer() {
         guard fixerResult == nil else {
