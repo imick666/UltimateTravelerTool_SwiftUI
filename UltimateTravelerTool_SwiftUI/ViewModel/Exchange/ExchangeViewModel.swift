@@ -19,17 +19,12 @@ final class ExchangeViewModel: ObservableObject {
     
     private var restCountriesFetcher = RestcountriesFetcher()
     private var fixerFetcher = FixerFetcher()
-    private var fixerResult: FixerResponse?
     private var formatter = NumberFormatter()
     
     
     
     // MARK: - Init
-    
-    init() {
-        fetchFixer()
-//        fetchCountries()
-    }
+
     
     // MARK: - Methodes
     
@@ -74,53 +69,23 @@ final class ExchangeViewModel: ObservableObject {
     }
     
     func executeExchange(for id: Int) {
-        guard let amount = Double(amount[id]) else {
-            self.amount.enumerated().forEach { index, _ in
-                self.amount[index] = ""
-            }
-            return
-        }
+        guard let amount = Double(amount[id]), let from = currencies[id] else { return }
         
-        formatter.numberStyle = .currency
-        formatter.locale = Locale.current
-        
-        for (index, currency) in currencies.enumerated() where index != id && currency != nil {
-            
-            guard let fromCode = currencies[id]?.code, let toCode = currency?.code else {
-                print("code invalide")
-                return
-            }
-            guard let fromRate = fixerResult?.rates[fromCode], let toRate = fixerResult?.rates[toCode] else {
-                print("rate invalide")
-                return
-            }
-            
-            let amountInEuro = amount / fromRate
-            
-            let result = amountInEuro * toRate
-            
-            formatter.currencyCode = currency?.code
-            
-            self.amount[index] = formatter.string(for: result)!
-        }
-
-    }
-
-    private func fetchFixer() {
-        guard fixerResult == nil else {
-            return
-        }
-        
-        fixerFetcher.getExchanges { (result) in
-            DispatchQueue.main.async {
-                switch result {
-                case.failure(_): return
-                case .success(let data): self.fixerResult = data
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            for (index, to) in self.currencies.enumerated() where index != id && to != nil {
+                self.fixerFetcher.calculeExchange(amount, from: from, to: to!) { (result) in
+                    switch result {
+                    case .failure(_): return
+                    case .success(let exchange):
+                        self.formatter.numberStyle = .currency
+                        self.formatter.locale = Locale.current
+                        self.formatter.currencyCode = to?.code!
+                        guard let stringExhcnage = self.formatter.string(for: exchange) else { return }
+                        self.amount[index] = stringExhcnage
+                    }
                 }
             }
+
         }
     }
-    
-    
-    
 }

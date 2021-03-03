@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E02D92E025EFB68000C2E692 /* FixerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F071125E965FD004A1748 /* FixerTest.swift */; };
 		E02F06CD25E93460004A1748 /* HTTPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F06CC25E93460004A1748 /* HTTPHelper.swift */; };
 		E02F06D225E934AD004A1748 /* HTTPError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F06D125E934AD004A1748 /* HTTPError.swift */; };
 		E02F06D925E938E4004A1748 /* RestcountriesFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F06D825E938E4004A1748 /* RestcountriesFetcher.swift */; };
@@ -476,6 +477,7 @@
 				E02F071825E9662A004A1748 /* RestcountriesTest.swift in Sources */,
 				E02F070D25E965DD004A1748 /* FixerFakeResponse.swift in Sources */,
 				E02F06F325E94578004A1748 /* MokeURLSession.swift in Sources */,
+				E02D92E025EFB68000C2E692 /* FixerTest.swift in Sources */,
 				E02F072025E9663C004A1748 /* RestcountriesFakeResponse.swift in Sources */,
 				E02F072A25E96765004A1748 /* FakeHttpUrlResponse.swift in Sources */,
 				E0A8FC9625E565EF001783D3 /* UltimateTravelerTool_SwiftUITests.swift in Sources */,

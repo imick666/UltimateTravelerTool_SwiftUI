@@ -12,13 +12,14 @@ class FixerTest: XCTestCase {
 
     let fakeResponse = FixerFakeResponse()
     let expectation = XCTestExpectation(description: "Wait for queue")
+    let currency = Currency(id: nil, code: "EUR", name: nil, symbol: nil)
 
     func testBadResponse() {
         let session = MokeURLSession(data: nil, response: fakeResponse.badResponse, error: nil)
         let httpHelper = HTTPHerlper(session: session)
         let fetcher = FixerFetcher(httpHelper: httpHelper)
         
-        fetcher.calculExchange(of: 0, from: "EUR", to: "EUR") { (result) in
+        fetcher.calculeExchange(2, from: currency, to: currency) { (result) in
             guard case .failure(let error) = result else {
                 XCTFail()
                 return
@@ -35,7 +36,7 @@ class FixerTest: XCTestCase {
         let httpHelper = HTTPHerlper(session: session)
         let fetcher = FixerFetcher(httpHelper: httpHelper)
         
-        fetcher.calculExchange(of: 0, from: "EUR", to: "EUR") { (result) in
+        fetcher.calculeExchange(0, from: currency, to: currency) { (result) in
             guard case .failure(let error) = result else {
                 XCTFail()
                 return
@@ -52,7 +53,7 @@ class FixerTest: XCTestCase {
         let httpHelper = HTTPHerlper(session: session)
         let fetcher = FixerFetcher(httpHelper: httpHelper)
         
-        fetcher.calculExchange(of: 0, from: "EUR", to: "EUR") { (result) in
+        fetcher.calculeExchange(0, from: currency, to: currency) { (result) in
             guard case .failure(let error) = result else {
                 XCTFail()
                 return
@@ -69,7 +70,7 @@ class FixerTest: XCTestCase {
         let httpHelper = HTTPHerlper(session: session)
         let fetcher = FixerFetcher(httpHelper: httpHelper)
         
-        fetcher.calculExchange(of: 0, from: "EUR", to: "EUR") { (result) in
+        fetcher.calculeExchange(0, from: currency, to: currency) { (result) in
             guard case .failure(let error) = result else {
                 XCTFail()
                 return
@@ -86,13 +87,13 @@ class FixerTest: XCTestCase {
         let httpHelper = HTTPHerlper(session: session)
         let fetcher = FixerFetcher(httpHelper: httpHelper)
         
-        fetcher.calculExchange(of: 0, from: "EUR", to: "EUR") { (result) in
+        fetcher.calculeExchange(2, from: currency, to: currency) { (result) in
             guard case .success(let data) = result else {
                 XCTFail()
                 return
             }
             self.expectation.fulfill()
-            XCTAssertEqual(data, 0)
+            XCTAssertEqual(data, 2)
         }
         
         wait(for: [expectation], timeout: 0.01)
