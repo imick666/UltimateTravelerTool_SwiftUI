@@ -38,11 +38,9 @@ struct CurrencyView: View {
                         .background(Color.blue)
                         .clipShape(Capsule())
                 })
-                .border(Color.blue, width: 1)
             
             Spacer()
         }
-        .border(Color.red, width: 1)
         .onChange(of: viewModel.amount[id], perform: { _ in
             guard isEditing else { return }
             viewModel.executeExchange(for: id)

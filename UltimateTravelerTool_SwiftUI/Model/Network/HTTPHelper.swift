@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import Combine
 
 final class HTTPHerlper {
     
     private let session: URLSession
+    private var publishers = Set<AnyCancellable>()
     
     init(session: URLSession = .shared) {
         self.session = session
@@ -37,5 +39,4 @@ final class HTTPHerlper {
             }
         }.resume()
     }
-    
 }

@@ -13,7 +13,7 @@ struct ExchangeView: View {
     
     var body: some View {
         VStack {
-            ForEach(0 ..< viewModel.numberOfCurrencies) { (index) in
+            ForEach(0 ..< viewModel.numberOfCurrencies, id: \.self) { (index) in
                 CurrencyView(viewModel: viewModel, id: index)
                 if index != viewModel.numberOfCurrencies - 1 { Divider() }
             }

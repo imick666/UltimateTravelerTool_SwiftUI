@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 final class FixerFetcher {
     
@@ -14,27 +15,29 @@ final class FixerFetcher {
     
     init(httpHelper: HTTPHerlper = HTTPHerlper()) {
         self.httpHelper = httpHelper
-        
     }
     
-    func calculeExchange(_ amount: Double, from: Currency, to: Currency, completionHandler: @escaping (Result<Double, HTTPError>) -> Void ) {
-        guard fixerResult != nil else {
-            getExchanges { (result) in
-                switch result {
-                case .failure(let error): completionHandler(.failure(error))
-                case .success(let data):
-                    self.fixerResult = data
-                    self.calculeExchange(amount, from: from, to: to, completionHandler: completionHandler)
+    func calculeExchange(_ amount: Double, from: Currency, to: Currency) -> Future<Double, HTTPError> {
+        return Future { (promise) in
+            guard self.fixerResult != nil else {
+                self.getExchanges { (result) in
+                    switch result {
+                    case.failure(let error): promise(.failure(error))
+                    case.success(let data):
+                        self.fixerResult = data
+                        _ = self.calculeExchange(amount, from: from, to: to)
+                    }
                 }
+                return
             }
-            return
+            
+            guard let fromRate = self.fixerResult?.rates[from.code!], let toRate = self.fixerResult?.rates[to.code!] else { return }
+            let amountInEuro = amount / fromRate
+            let exchange = amountInEuro * toRate
+            promise(.success(exchange))
         }
-        
-        guard let fromRate = fixerResult?.rates[from.code!], let toRate = fixerResult?.rates[to.code!] else { return }
-        let amountInEuro = amount / fromRate
-        let exchange = amountInEuro * toRate
-        completionHandler(.success(exchange))
     }
+
     
     private func getExchanges(completionHandler: @escaping (Result<FixerResponse, HTTPError>) -> Void) {
         guard let url = getUrl().url else {

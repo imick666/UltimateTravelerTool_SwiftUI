@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 final class ExchangeViewModel: ObservableObject {
     
@@ -21,10 +22,15 @@ final class ExchangeViewModel: ObservableObject {
     private var fixerFetcher = FixerFetcher()
     private var formatter = NumberFormatter()
     
-    
+    private var token = Set<AnyCancellable>() {
+        didSet {
+            print(token)
+        }
+    }
     
     // MARK: - Init
 
+    
     
     // MARK: - Methodes
     
@@ -69,23 +75,31 @@ final class ExchangeViewModel: ObservableObject {
     }
     
     func executeExchange(for id: Int) {
-        guard let amount = Double(amount[id]), let from = currencies[id] else { return }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            for (index, to) in self.currencies.enumerated() where index != id && to != nil {
-                self.fixerFetcher.calculeExchange(amount, from: from, to: to!) { (result) in
-                    switch result {
-                    case .failure(_): return
-                    case .success(let exchange):
-                        self.formatter.numberStyle = .currency
-                        self.formatter.locale = Locale.current
-                        self.formatter.currencyCode = to?.code!
-                        guard let stringExhcnage = self.formatter.string(for: exchange) else { return }
-                        self.amount[index] = stringExhcnage
-                    }
-                }
+        guard let amount = Double(amount[id]), let from = currencies[id] else {
+            for (index, _) in self.amount.enumerated() {
+                self.amount[index] = ""
             }
-
+            return
         }
+        
+        for (index, to) in self.currencies.enumerated() where index != id && to != nil {
+            fixerFetcher.calculeExchange(amount, from: from, to: to!)
+                .receive(on: DispatchQueue.main)
+                .sink { (completion) in
+                    switch completion {
+                    case .finished:
+                        print("observed has finish")
+                    case .failure(_): return
+                    }
+                } receiveValue: { (exchangeAmount) in
+                    self.formatter.numberStyle = .currency
+                    self.formatter.locale = Locale.current
+                    self.formatter.currencyCode = to?.code!
+                    guard let stringExhcnage = self.formatter.string(for: exchangeAmount) else { return }
+                    self.amount[index] = stringExhcnage
+                }
+                .store(in: &token)
+        }
+        
     }
 }
