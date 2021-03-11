@@ -8,35 +8,32 @@
 import Foundation
 import Combine
 
-final class HTTPHerlper {
+
+final class HTTPRequestHelper {
     
-    private let session: URLSession
-    private var publishers = Set<AnyCancellable>()
+    private let session: HTTPSession
     
-    init(session: URLSession = .shared) {
+    init(session: HTTPSession = HTTPSessionHelper()) {
         self.session = session
     }
     
-    func fetch<T: Decodable>(from url: URL, completionHandler: @escaping (Result<T, HTTPError>) -> Void) {
-        session.dataTask(with: url) { (data, response, error) in
-            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                completionHandler(.failure(HTTPError.badResponse))
-                return
+    func make<T: Decodable>(url: URL) -> AnyPublisher<T, HTTPError> {
+        session.request(url: url)
+            .tryMap {
+                guard let response = $0.response as? HTTPURLResponse, response.statusCode == 200 else {
+                    throw HTTPError.badResponse
+                }
+                
+                return $0.data
             }
-            guard error == nil else {
-                completionHandler(.failure(HTTPError.badResponse))
-                return
+            .decode(type: T.self, decoder: JSONDecoder())
+            .mapError { error in
+                switch error {
+                case is HTTPError: return error as! HTTPError
+                case is DecodingError: return HTTPError.parsing
+                default: return HTTPError.otherError
+                }
             }
-            guard let data = data else {
-                completionHandler(.failure(.noData))
-                return
-            }
-            do {
-                let dataResponse = try JSONDecoder().decode(T.self, from: data)
-                completionHandler(.success(dataResponse))
-            } catch {
-                completionHandler(.failure(.parsing))
-            }
-        }.resume()
+            .eraseToAnyPublisher()
     }
 }

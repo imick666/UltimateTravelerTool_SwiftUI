@@ -19,7 +19,7 @@ struct CurrencyView: View {
             
             Spacer()
             
-            TextField("0.00", text: $viewModel.amount[id], onEditingChanged: { (changed) in
+            TextField("0.00", text: $viewModel.amounts[id], onEditingChanged: { (changed) in
                 isEditing = changed
             })
                 .multilineTextAlignment(.center)
@@ -41,7 +41,7 @@ struct CurrencyView: View {
             
             Spacer()
         }
-        .onChange(of: viewModel.amount[id], perform: { _ in
+        .onChange(of: viewModel.amounts[id], perform: { _ in
             guard isEditing else { return }
             viewModel.executeExchange(for: id)
         })

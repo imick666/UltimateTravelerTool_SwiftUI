@@ -6,30 +6,19 @@
 //
 
 import Foundation
+import Combine
+@testable import UltimateTravelerTool_SwiftUI
 
-final class FixerFakeResponse {
+final class FixerFakeResponse: FakeData {
     
-    var badResponse: HTTPURLResponse? {
-        return HTTPURLResponse(url: URL(string: "ggogle.fr")!, statusCode: 500, httpVersion: nil, headerFields: nil)
-    }
-    
-    var goodResponse: HTTPURLResponse? {
-        return HTTPURLResponse(url: URL(string: "ggogle.fr")!, statusCode: 200, httpVersion: nil, headerFields: nil)
-    }
-    
-    final class FakeError: Error { }
-    
-    var error = FakeError()
-    
-    var goodData: Data? {
+    var goodData: Data {
         let bundle = Bundle(for: FixerFakeResponse.self)
         let url = bundle.url(forResource: "Fixer", withExtension: "json")!
-        return try? Data(contentsOf: url)
+        return try! Data(contentsOf: url)
     }
     
-    var badData: Data? {
+    var badData: Data {
         let data = "hello".data(using: .utf8)
-        return try? JSONEncoder().encode(data)
+        return try! JSONEncoder().encode(data)
     }
-    
 }

@@ -18,10 +18,9 @@
 		E02F06F325E94578004A1748 /* MokeURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F06F225E94578004A1748 /* MokeURLSession.swift */; };
 		E02F070525E965CA004A1748 /* Fixer.json in Resources */ = {isa = PBXBuildFile; fileRef = E02F070425E965CA004A1748 /* Fixer.json */; };
 		E02F070D25E965DD004A1748 /* FixerFakeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F070C25E965DD004A1748 /* FixerFakeResponse.swift */; };
-		E02F071825E9662A004A1748 /* RestcountriesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F071725E9662A004A1748 /* RestcountriesTest.swift */; };
 		E02F072025E9663C004A1748 /* RestcountriesFakeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F071F25E9663C004A1748 /* RestcountriesFakeResponse.swift */; };
 		E02F072525E9664B004A1748 /* Restcountries.json in Resources */ = {isa = PBXBuildFile; fileRef = E02F072425E9664B004A1748 /* Restcountries.json */; };
-		E02F072A25E96765004A1748 /* FakeHttpUrlResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F072925E96765004A1748 /* FakeHttpUrlResponse.swift */; };
+		E08965C325FA6A06007A2EE1 /* RestcountriesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F071725E9662A004A1748 /* RestcountriesTest.swift */; };
 		E0A8FC8425E565EE001783D3 /* UltimateTravelerTool_SwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8FC8325E565EE001783D3 /* UltimateTravelerTool_SwiftUIApp.swift */; };
 		E0A8FC8625E565EE001783D3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8FC8525E565EE001783D3 /* ContentView.swift */; };
 		E0A8FC8825E565EF001783D3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E0A8FC8725E565EF001783D3 /* Assets.xcassets */; };
@@ -35,6 +34,7 @@
 		E0CA5AF325EC048000F1449B /* SelectCurrencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0CA5AF225EC048000F1449B /* SelectCurrencyView.swift */; };
 		E0CA5AF825EC07C800F1449B /* CountryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0CA5AF725EC07C800F1449B /* CountryListView.swift */; };
 		E0CA5AFD25EC0BD600F1449B /* CurrencyListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0CA5AFC25EC0BD600F1449B /* CurrencyListView.swift */; };
+		E0DC055125FA3F38009CF2B6 /* HTTPSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0DC055025FA3F38009CF2B6 /* HTTPSession.swift */; };
 		E0E8C97025EE8278003F521D /* View+UIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0E8C96F25EE8278003F521D /* View+UIApplication.swift */; };
 /* End PBXBuildFile section */
 
@@ -70,7 +70,6 @@
 		E02F071725E9662A004A1748 /* RestcountriesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestcountriesTest.swift; sourceTree = "<group>"; };
 		E02F071F25E9663C004A1748 /* RestcountriesFakeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestcountriesFakeResponse.swift; sourceTree = "<group>"; };
 		E02F072425E9664B004A1748 /* Restcountries.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Restcountries.json; sourceTree = "<group>"; };
-		E02F072925E96765004A1748 /* FakeHttpUrlResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeHttpUrlResponse.swift; sourceTree = "<group>"; };
 		E0A8FC8025E565EE001783D3 /* UltimateTravelerTool_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UltimateTravelerTool_SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0A8FC8325E565EE001783D3 /* UltimateTravelerTool_SwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UltimateTravelerTool_SwiftUIApp.swift; sourceTree = "<group>"; };
 		E0A8FC8525E565EE001783D3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -90,6 +89,7 @@
 		E0CA5AF225EC048000F1449B /* SelectCurrencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectCurrencyView.swift; sourceTree = "<group>"; };
 		E0CA5AF725EC07C800F1449B /* CountryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryListView.swift; sourceTree = "<group>"; };
 		E0CA5AFC25EC0BD600F1449B /* CurrencyListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyListView.swift; sourceTree = "<group>"; };
+		E0DC055025FA3F38009CF2B6 /* HTTPSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPSession.swift; sourceTree = "<group>"; };
 		E0E8C96F25EE8278003F521D /* View+UIApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+UIApplication.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -166,9 +166,9 @@
 		E02F070325E965B5004A1748 /* FixerTest */ = {
 			isa = PBXGroup;
 			children = (
-				E02F070425E965CA004A1748 /* Fixer.json */,
-				E02F070C25E965DD004A1748 /* FixerFakeResponse.swift */,
 				E02F071125E965FD004A1748 /* FixerTest.swift */,
+				E02F070C25E965DD004A1748 /* FixerFakeResponse.swift */,
+				E02F070425E965CA004A1748 /* Fixer.json */,
 			);
 			path = FixerTest;
 			sourceTree = "<group>";
@@ -259,7 +259,6 @@
 				E0A8FC9525E565EF001783D3 /* UltimateTravelerTool_SwiftUITests.swift */,
 				E0A8FC9725E565EF001783D3 /* Info.plist */,
 				E02F06F225E94578004A1748 /* MokeURLSession.swift */,
-				E02F072925E96765004A1748 /* FakeHttpUrlResponse.swift */,
 			);
 			path = UltimateTravelerTool_SwiftUITests;
 			sourceTree = "<group>";
@@ -313,6 +312,7 @@
 			isa = PBXGroup;
 			children = (
 				E0A8FCC525E566B8001783D3 /* APIConfigs.swift */,
+				E0DC055025FA3F38009CF2B6 /* HTTPSession.swift */,
 				E02F06CC25E93460004A1748 /* HTTPHelper.swift */,
 				E02F06D125E934AD004A1748 /* HTTPError.swift */,
 			);
@@ -462,6 +462,7 @@
 				E02F06E425E93C07004A1748 /* Parsing.swift in Sources */,
 				E02F06E925E93FE4004A1748 /* FixerFetcher.swift in Sources */,
 				E0CA5AE325EBF4C000F1449B /* CurrencyView.swift in Sources */,
+				E0DC055125FA3F38009CF2B6 /* HTTPSession.swift in Sources */,
 				E0A8FC8425E565EE001783D3 /* UltimateTravelerTool_SwiftUIApp.swift in Sources */,
 				E02F06D225E934AD004A1748 /* HTTPError.swift in Sources */,
 				E0CA5AF325EC048000F1449B /* SelectCurrencyView.swift in Sources */,
@@ -474,12 +475,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E02F071825E9662A004A1748 /* RestcountriesTest.swift in Sources */,
 				E02F070D25E965DD004A1748 /* FixerFakeResponse.swift in Sources */,
 				E02F06F325E94578004A1748 /* MokeURLSession.swift in Sources */,
 				E02D92E025EFB68000C2E692 /* FixerTest.swift in Sources */,
 				E02F072025E9663C004A1748 /* RestcountriesFakeResponse.swift in Sources */,
-				E02F072A25E96765004A1748 /* FakeHttpUrlResponse.swift in Sources */,
+				E08965C325FA6A06007A2EE1 /* RestcountriesTest.swift in Sources */,
 				E0A8FC9625E565EF001783D3 /* UltimateTravelerTool_SwiftUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

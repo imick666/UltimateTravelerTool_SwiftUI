@@ -8,6 +8,9 @@
 import Foundation
 
 struct FixerResponse: Codable {
+    
+    typealias rates = [String: Double]
+    
     let success: Bool
     let timestamp: Int
     let base, date: String

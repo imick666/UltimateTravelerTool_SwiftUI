@@ -7,127 +7,110 @@
 
 import XCTest
 @testable import UltimateTravelerTool_SwiftUI
+import Combine
 
 class RestcountriesTest: XCTestCase {
 
-    var urlSession: MokeURLSession?
-    let fakeResponse = RestcountriesFakeReponse()
+    // MARK: - Properties
+    
+    var urlSession: MokeHTTPSession!
+    var HTTPRequest: HTTPRequestHelper {
+        return HTTPRequestHelper(session: urlSession)
+    }
+    var countriesFetcher: RestcountriesFetcher {
+        return RestcountriesFetcher(httpHelper: HTTPRequest)
+    }
+    var datas = RestcountriesFakeReponse()
     let expactation = XCTestExpectation(description: "Wait for queue")
     
+    // MARK: - Tests
+    
     func testBadResponse() {
-        urlSession = MokeURLSession(data: nil, response: fakeResponse.badResponse, error: nil)
+        urlSession = MokeHTTPSession(data: datas, responseType: .badResponse)
         
-        let fetcher = RestcountriesFetcher(httpHelper: HTTPHerlper(session: urlSession!))
-        fetcher.getCountries { (result) in
-            guard case .failure(let error) = result else {
-                XCTFail()
-                return
-            }
-            self.expactation.fulfill()
-            
-            XCTAssertEqual(error , .badResponse)
-            
-        }
+        _ = countriesFetcher.getCountries()
+            .sink { (completion) in
+                guard case .failure(let error) = completion else {
+                    XCTFail()
+                    return
+                }
+                self.expactation.fulfill()
+                XCTAssertEqual(error, .badResponse)
+            } receiveValue: { _ in }
+
         wait(for: [expactation], timeout: 0.01)
     }
     
     func testError() {
-        urlSession = MokeURLSession(data: nil, response: fakeResponse.goodResponse, error: fakeResponse.error)
-        
-        let fetcher = RestcountriesFetcher(httpHelper: HTTPHerlper(session: urlSession!))
-        fetcher.getCountries { (result) in
-            guard case .failure(let error) = result else {
-                XCTFail()
-                return
-            }
-            self.expactation.fulfill()
-            
-            XCTAssertEqual(error , .badResponse)
-            
-        }
-        wait(for: [expactation], timeout: 0.01)
-    }
-    
-    func testNoData() {
-        urlSession = MokeURLSession(data: nil, response: fakeResponse.goodResponse, error: nil)
-        
-        let fetcher = RestcountriesFetcher(httpHelper: HTTPHerlper(session: urlSession!))
-        fetcher.getCountries { (result) in
-            guard case .failure(let error) = result else {
-                XCTFail()
-                return
-            }
-            self.expactation.fulfill()
-            
-            XCTAssertEqual(error , .noData)
-            
-        }
-        wait(for: [expactation], timeout: 0.01)
-    }
-    
-    func testBadData() {
-        urlSession = MokeURLSession(data: fakeResponse.badData, response: fakeResponse.goodResponse, error: nil)
-        
-        let fetcher = RestcountriesFetcher(httpHelper: HTTPHerlper(session: urlSession!))
-        fetcher.getCountries { (result) in
-            guard case .failure(let error) = result else {
-                XCTFail()
-                return
-            }
-            self.expactation.fulfill()
-            
-            XCTAssertEqual(error , .parsing)
-            
-        }
-        wait(for: [expactation], timeout: 0.01)
-    }
-    
-    func testCountries() {
-        urlSession = MokeURLSession(data: fakeResponse.goodData, response: fakeResponse.goodResponse, error: nil)
-        
-        let fetcher = RestcountriesFetcher(httpHelper: HTTPHerlper(session: urlSession!))
-        fetcher.getCountries { (result) in
-            guard case .success(let data) = result else {
-                guard case .failure(let error) = result else {
+        urlSession = MokeHTTPSession(data: datas, responseType: .error)
+
+        _ = countriesFetcher.getCountries()
+            .sink { completion in
+                guard case .failure(let error) = completion else {
                     XCTFail()
                     return
                 }
-                XCTAssertEqual(error, .noData)
-                return
-            }
-            self.expactation.fulfill()
-            XCTAssertNotNil(data)
-            XCTAssertTrue(data.contains(where: {$0.currencies.contains(where: { $0.code != nil || $0.code?.count != 3 })}))
-            XCTAssertTrue(data.allSatisfy({ $0.id != nil }))
-            XCTAssertTrue(data.contains(where: { $0.currencies.allSatisfy({ $0.id != nil})}))
-            
-        }
+                self.expactation.fulfill()
+                XCTAssertEqual(error, .otherError)
+            } receiveValue: { _ in }
         
+        wait(for: [expactation], timeout: 0.01)
+    }
+//
+    func testBadData() {
+        urlSession = MokeHTTPSession(data: datas, responseType: .badData)
+
+        _ = countriesFetcher.getCountries()
+            .sink(receiveCompletion: { completion in
+                guard case .failure(let error) = completion else {
+                    XCTFail()
+                    return
+                }
+                self.expactation.fulfill()
+                XCTAssertEqual(error, .parsing)
+            }, receiveValue: { _ in })
+        
+        wait(for: [expactation], timeout: 0.01)
+    }
+
+    func testCountries() {
+        urlSession = MokeHTTPSession(data: datas, responseType: .goddData)
+        
+        _ = countriesFetcher.getCountries()
+            .sink(receiveCompletion: { completion in
+                guard case .finished = completion else {
+                    XCTFail()
+                    return
+                }
+                self.expactation.fulfill()
+            }, receiveValue: { data in
+                XCTAssertNotNil(data)
+                XCTAssertTrue(data.contains(where: {$0.currencies.contains(where: { $0.code != nil || $0.code?.count != 3 })}))
+                XCTAssertTrue(data.allSatisfy({ $0.id != nil }))
+                XCTAssertTrue(data.contains(where: { $0.currencies.allSatisfy({ $0.id != nil})}))
+            })
+
         wait(for: [expactation], timeout: 0.01)
 
     }
-    
+
     func testCurrencies() {
-        urlSession = MokeURLSession(data: fakeResponse.goodData, response: fakeResponse.goodResponse, error: nil)
+        urlSession = MokeHTTPSession(data: datas, responseType: .goddData)
         
-        let fetcher = RestcountriesFetcher(httpHelper: HTTPHerlper(session: urlSession!))
-        fetcher.getCurrencies { (result) in
-            guard case .success(let data) = result else {
-                guard case .failure(let error) = result else {
+        _ = countriesFetcher.getCurrencies()
+            .sink(receiveCompletion: { completion in
+                guard case .finished = completion else {
                     XCTFail()
                     return
                 }
-                XCTAssertEqual(error, .noData)
-                return
-            }
-            self.expactation.fulfill()
-            XCTAssertNotNil(data)
-            XCTAssertTrue(data.contains(where: { $0.code != nil}))
-            XCTAssertTrue(data.contains(where: { $0.name != nil}))
-            XCTAssertTrue(data.allSatisfy({ $0.id != nil }))
-            
-        }
-        
+                self.expactation.fulfill()
+            }, receiveValue: { data in
+                XCTAssertNotNil(data)
+                XCTAssertTrue(data.contains(where: { $0.code != nil}))
+                XCTAssertTrue(data.contains(where: { $0.name != nil}))
+                XCTAssertTrue(data.allSatisfy({ $0.id != nil }))
+            })
+
         wait(for: [expactation], timeout: 0.01)
     }
 

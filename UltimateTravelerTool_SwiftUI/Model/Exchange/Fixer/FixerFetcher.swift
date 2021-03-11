@@ -10,48 +10,36 @@ import Combine
 
 final class FixerFetcher {
     
-    private let httpHelper: HTTPHerlper
-    private var fixerResult: FixerResponse?
+    // MARK: - Properties
     
-    init(httpHelper: HTTPHerlper = HTTPHerlper()) {
+    private let httpHelper: HTTPRequestHelper
+    
+    // MARK: - Init
+    
+    init(httpHelper: HTTPRequestHelper = HTTPRequestHelper()) {
         self.httpHelper = httpHelper
     }
     
-    func calculeExchange(_ amount: Double, from: Currency, to: Currency) -> Future<Double, HTTPError> {
-        return Future { (promise) in
-            guard self.fixerResult != nil else {
-                self.getExchanges { (result) in
-                    switch result {
-                    case.failure(let error): promise(.failure(error))
-                    case.success(let data):
-                        self.fixerResult = data
-                        _ = self.calculeExchange(amount, from: from, to: to)
-                    }
-                }
-                return
-            }
-            
-            guard let fromRate = self.fixerResult?.rates[from.code!], let toRate = self.fixerResult?.rates[to.code!] else { return }
-            let amountInEuro = amount / fromRate
-            let exchange = amountInEuro * toRate
-            promise(.success(exchange))
-        }
+    // MARK: - Methodes
+    
+    func getRates() -> AnyPublisher<[String: Double], HTTPError> {
+        fetchFixer()
+            .map { $0.rates }
+            .eraseToAnyPublisher()
+    }
+    
+    func calculExchange(_ amout: Double, from: Double, to: Double) -> Double {
+        let amountInEuro = amout / from
+        return amountInEuro * to
     }
 
     
-    private func getExchanges(completionHandler: @escaping (Result<FixerResponse, HTTPError>) -> Void) {
-        guard let url = getUrl().url else {
-            completionHandler(.failure(.badUrl))
-            return
-        }
-        
-        httpHelper.fetch(from: url) { (result) in
-            completionHandler(result)
-        }
-            
+    private func fetchFixer() -> AnyPublisher<FixerResponse, HTTPError> {
+        httpHelper.make(url: getUrl())
+
     }
     
-    private func getUrl() -> URLComponents {
+    private func getUrl() -> URL {
         var components = URLComponents()
         components.scheme = "http"
         components.host = "data.fixer.io"
@@ -61,7 +49,7 @@ final class FixerFetcher {
             URLQueryItem(name: "access_key", value: APIConfig.fixerKey)
         ]
         
-        return components
+        return components.url!
     }
     
 }

@@ -12,4 +12,6 @@ enum HTTPError: Error {
     case badUrl
     case noData
     case parsing
+    case otherError
+    
 }

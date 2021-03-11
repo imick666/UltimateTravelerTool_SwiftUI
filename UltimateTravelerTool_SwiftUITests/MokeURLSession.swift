@@ -6,43 +6,66 @@
 //
 
 import Foundation
+@testable import UltimateTravelerTool_SwiftUI
+import Combine
 
-class MokeURLSession: URLSession {
-    
-    var data: Data?
-    var response: URLResponse?
-    var error: Error?
-    
-    init(data: Data?, response: URLResponse?, error: Error?) {
-        self.data = data
-        self.response = response
-        self.error = error
-    }
-    
-    override func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
-        let task = MokeDataTask(data: data, response: response, error: error, completionHandler: completionHandler)
-        return task
-        
-    }
+protocol FakeData {
+    var goodData: Data { get }
+    var badData: Data { get }
 }
 
-class MokeDataTask: URLSessionDataTask {
+final class MokeHTTPSession: HTTPSession {
     
-    var fakeData: Data?
-    var fakeResponse: URLResponse?
-    var fakeError: Error?
-    var completionHandler: ((Data?, URLResponse?, Error?) -> Void)?
-    
-    init(data: Data?, response: URLResponse?, error: Error?, completionHandler: ((Data?, URLResponse?, Error?) -> Void)?) {
-        self.fakeData = data
-        self.fakeResponse = response
-        self.fakeError = error
-        self.completionHandler = completionHandler
+    enum ResponseType {
+        case badResponse, error, badData, goddData
     }
     
-    override func resume() {
-        completionHandler?(fakeData, fakeResponse, fakeError)
+    // MARK: - Properties
+    
+    private var data: FakeData
+    private var response: URLResponse {
+        switch responseType {
+        case .badResponse: return badResponse
+        default: return goodResponse
+        }
+    }
+    private var error = URLError(.unknown)
+    private var responseType: ResponseType
+    
+    private var badResponse: HTTPURLResponse {
+        return HTTPURLResponse(url: URL(string: "https://www.google.fr")!, statusCode: 500, httpVersion: nil, headerFields: nil)!
     }
     
-    override func cancel() { }
+    private var goodResponse: HTTPURLResponse {
+        return HTTPURLResponse(url: URL(string: "https://www.google.fr")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+    }
+    
+    // MARK: Init
+    
+    init(data: FakeData, responseType: ResponseType) {
+        self.responseType = responseType
+        self.data = data
+    }
+    
+    // MARK: - Methodes
+    
+    func request(url: URL) -> AnyPublisher<Output, Failure> {
+        switch responseType {
+        case.badResponse:
+            return Just((Data(), response))
+                .setFailureType(to: URLError.self)
+                .eraseToAnyPublisher()
+        case .error:
+            return Fail.init(outputType: Output.self, failure: error)
+                .eraseToAnyPublisher()
+        case .badData:
+            return Just((data.badData, response))
+                .setFailureType(to: URLError.self)
+                .eraseToAnyPublisher()
+        case .goddData:
+            return Just((data.goodData, response))
+                .setFailureType(to: URLError.self)
+                .eraseToAnyPublisher()
+        }
+    }
 }

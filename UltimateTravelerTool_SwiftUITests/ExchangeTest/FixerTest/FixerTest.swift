@@ -10,116 +10,79 @@ import Combine
 @testable import UltimateTravelerTool_SwiftUI
 
 class FixerTest: XCTestCase {
+    
+    // MARK: - Properties
 
-    let fakeResponse = FixerFakeResponse()
     let expectation = XCTestExpectation(description: "Wait for queue")
-    let currency = Currency(id: nil, code: "EUR", name: nil, symbol: nil)
-    var tokens = Set<AnyCancellable>()
+    var mokeHttpSession: MokeHTTPSession!
+    var httpRequest: HTTPRequestHelper {
+        return HTTPRequestHelper(session: mokeHttpSession)
+    }
+    var fixerFetcher: FixerFetcher {
+        return FixerFetcher(httpHelper: httpRequest)
+    }
 
-    func testBadResponse() {
-        let session = MokeURLSession(data: nil, response: fakeResponse.badResponse, error: nil)
-        let httpHelper = HTTPHerlper(session: session)
-        let fetcher = FixerFetcher(httpHelper: httpHelper)
+    // MARK: - Tests
+
+    func testBadData() {
+        mokeHttpSession = MokeHTTPSession(data: FixerFakeResponse(), responseType: .badData)
+
         
-        fetcher.calculeExchange(2, from: currency, to: currency)
-            .sink { (completion) in
-                switch completion {
-                case .finished: XCTFail()
-                case .failure(let error):
-                    self.expectation.fulfill()
-                    XCTAssertEqual(error, .badResponse)
-                }
-            } receiveValue: { (_) in
-                
-            }
-            .store(in: &tokens)
+        _ = fixerFetcher.getRates()
+            .sink(receiveCompletion: { error in
+                XCTAssertEqual(error, .failure(.parsing))
+                self.expectation.fulfill()
+            }, receiveValue: { _ in })
         
-        wait(for: [expectation], timeout: 0.01)
+        wait(for: [expectation], timeout: 0.1)
     }
     
-    func testError() {
-        let session = MokeURLSession(data: nil, response: fakeResponse.goodResponse, error: fakeResponse.error)
-        let httpHelper = HTTPHerlper(session: session)
-        let fetcher = FixerFetcher(httpHelper: httpHelper)
+    func testBadResponse() {
+        mokeHttpSession = MokeHTTPSession(data: FixerFakeResponse(), responseType: .badResponse)
         
-        fetcher.calculeExchange(0, from: currency, to: currency)
-            .sink { (completion) in
+        _ = fixerFetcher.getRates()
+            .sink(receiveCompletion: { (completion) in
                 guard case .failure(let error) = completion else {
                     XCTFail()
                     return
                 }
                 self.expectation.fulfill()
                 XCTAssertEqual(error, .badResponse)
-            } receiveValue: { (_) in
-                
-            }
-            .store(in: &tokens)
-
+            }, receiveValue: { _ in })
         
-        wait(for: [expectation], timeout: 0.01)
-    }
-    
-    func testNoData() {
-        let session = MokeURLSession(data: nil, response: fakeResponse.goodResponse, error: nil)
-        let httpHelper = HTTPHerlper(session: session)
-        let fetcher = FixerFetcher(httpHelper: httpHelper)
-        
-        fetcher.calculeExchange(0, from: currency, to: currency)
-            .sink { (completion) in
-                guard case .failure(let error) = completion else {
-                    XCTFail()
-                    return
-                }
-                self.expectation.fulfill()
-                XCTAssertEqual(error, .noData)
-            } receiveValue: { (_) in
-                
-            }
-            .store(in: &tokens)
-        
-        wait(for: [expectation], timeout: 0.01)
-    }
-    
-    func testBadData() {
-        let session = MokeURLSession(data: fakeResponse.badData, response: fakeResponse.goodResponse, error: nil)
-        let httpHelper = HTTPHerlper(session: session)
-        let fetcher = FixerFetcher(httpHelper: httpHelper)
-        
-        fetcher.calculeExchange(0, from: currency, to: currency)
-            .sink { (completion) in
-                guard case .failure(let error) = completion else {
-                    XCTFail()
-                    return
-                }
-                self.expectation.fulfill()
-                XCTAssertEqual(error, .parsing)
-            } receiveValue: { (_) in
-                
-            }
-            .store(in: &tokens)
-        
-        wait(for: [expectation], timeout: 0.01)
+        wait(for: [expectation], timeout: 0.1)
     }
     
     func testAllGood() {
-        let session = MokeURLSession(data: fakeResponse.goodData, response: fakeResponse.goodResponse, error: nil)
-        let httpHelper = HTTPHerlper(session: session)
-        let fetcher = FixerFetcher(httpHelper: httpHelper)
+        mokeHttpSession = MokeHTTPSession(data: FixerFakeResponse(), responseType: .goddData)
         
-        fetcher.calculeExchange(0, from: currency, to: currency)
-            .sink { (completion) in
-                
-                guard case .failure(_) = completion else {
+        _ = fixerFetcher.getRates()
+            .sink(receiveCompletion: { completion in
+                guard case .finished = completion else {
                     XCTFail()
                     return
                 }
                 self.expectation.fulfill()
-            } receiveValue: { (data) in
-                
-                XCTAssertEqual(data, 0)
-            }
-            .store(in: &tokens)
+            }, receiveValue: { value in
+                XCTAssertNotNil(value)
+            })
         
         wait(for: [expectation], timeout: 0.01)
     }
+    
+    func testError() {
+        mokeHttpSession = MokeHTTPSession(data: FixerFakeResponse(), responseType: .error)
+        
+        _ = fixerFetcher.getRates()
+            .sink(receiveCompletion: { (completion) in
+                guard case .failure(let error) = completion else {
+                    XCTFail()
+                    return
+                }
+                self.expectation.fulfill()
+                XCTAssertEqual(error, .otherError)
+            }, receiveValue: { _ in })
+        wait(for: [expectation], timeout: 0.01)
+    }
+    
 }
