@@ -88,6 +88,7 @@ class RestcountriesTest: XCTestCase {
                 XCTAssertTrue(data.allSatisfy({$0.currencies.contains(where: { $0.code != nil || $0.code?.count != 3 })}))
                 XCTAssertTrue(data.allSatisfy({ $0.id != nil }))
                 XCTAssertTrue(data.allSatisfy({ $0.currencies.allSatisfy({ $0.id != nil})}))
+                XCTAssertNotEqual(data.count, 0)
             })
 
         wait(for: [expactation], timeout: 0.01)
@@ -131,6 +132,7 @@ class RestcountriesTest: XCTestCase {
                 XCTAssertTrue(data.allSatisfy({ $0.code != nil}))
                 XCTAssertTrue(data.allSatisfy({ $0.name != nil}))
                 XCTAssertTrue(data.allSatisfy({ $0.id != nil }))
+                XCTAssertNotEqual(data.count, 0)
             })
 
         wait(for: [expactation], timeout: 0.01)

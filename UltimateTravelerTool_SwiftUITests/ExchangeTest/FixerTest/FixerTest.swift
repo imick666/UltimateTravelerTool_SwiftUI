@@ -21,6 +21,7 @@ class FixerTest: XCTestCase {
     var fixerFetcher: FixerFetcher {
         return FixerFetcher(httpHelper: httpRequest)
     }
+    let euro = Currency(id: UUID(), code: "EUR", name: "Euros", symbol: "€")
 
     // MARK: - Tests
 
@@ -28,7 +29,7 @@ class FixerTest: XCTestCase {
         mokeHttpSession = MokeHTTPSession(data: FixerFakeResponse(), responseType: .badData)
 
         
-        _ = fixerFetcher.getRates()
+        _ = fixerFetcher.executeExchange(1, from: euro, to: euro)
             .sink(receiveCompletion: { error in
                 XCTAssertEqual(error, .failure(.parsing))
                 self.expectation.fulfill()
@@ -40,7 +41,7 @@ class FixerTest: XCTestCase {
     func testBadResponse() {
         mokeHttpSession = MokeHTTPSession(data: FixerFakeResponse(), responseType: .badResponse)
         
-        _ = fixerFetcher.getRates()
+        _ = fixerFetcher.executeExchange(1, from: euro, to: euro)
             .sink(receiveCompletion: { (completion) in
                 guard case .failure(let error) = completion else {
                     XCTFail()
@@ -56,7 +57,7 @@ class FixerTest: XCTestCase {
     func testAllGood() {
         mokeHttpSession = MokeHTTPSession(data: FixerFakeResponse(), responseType: .goddData)
         
-        _ = fixerFetcher.getRates()
+        _ = fixerFetcher.executeExchange(1, from: euro, to: euro)
             .sink(receiveCompletion: { completion in
                 guard case .finished = completion else {
                     XCTFail()
@@ -64,7 +65,7 @@ class FixerTest: XCTestCase {
                 }
                 self.expectation.fulfill()
             }, receiveValue: { value in
-                XCTAssertNotNil(value)
+                XCTAssertEqual(value, 1)
             })
         
         wait(for: [expectation], timeout: 0.01)
@@ -73,7 +74,7 @@ class FixerTest: XCTestCase {
     func testError() {
         mokeHttpSession = MokeHTTPSession(data: FixerFakeResponse(), responseType: .error)
         
-        _ = fixerFetcher.getRates()
+        _ = fixerFetcher.executeExchange(1, from: euro, to: euro)
             .sink(receiveCompletion: { (completion) in
                 guard case .failure(let error) = completion else {
                     XCTFail()

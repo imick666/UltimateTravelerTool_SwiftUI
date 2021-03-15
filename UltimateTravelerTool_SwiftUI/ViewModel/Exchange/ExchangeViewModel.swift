@@ -15,37 +15,18 @@ final class ExchangeViewModel: ObservableObject {
     @Published var amounts = ["", ""]
     @Published var currencies: [Currency?] = [nil, nil]
     @Published var numberOfCurrencies = 2
-    @Published var countriesList = [RestcountriesResponse]()
-    @Published var currenciesList = [Currency]()
-    @Published var searchTerms: String = ""
     
     private(set) var restCountriesFetcher = RestcountriesFetcher()
-    private var exchangeRates = [String: Double]()
     private var fixerFetcher = FixerFetcher()
     private var formatter = NumberFormatter()
-    
-    private var subscribers = Set<AnyCancellable>()
     
     // MARK: - Init
 
     init() {
         
-        $searchTerms
-            .debounce(for: .milliseconds(800), scheduler: RunLoop.main)
-            .sink(receiveValue: { _ in self.sortCountries() })
-            .store(in: &subscribers)
-
     }
     
     // MARK: - Methodes
-    
-    private func sortCountries() {
-        restCountriesFetcher.getCountries(searchTerms: searchTerms)
-            .sink { _ in }
-                receiveValue: { self.countriesList = $0 }
-            .store(in: &subscribers)
-
-    }
     
     func plusCurrency() {
         numberOfCurrencies += 1
@@ -71,31 +52,13 @@ final class ExchangeViewModel: ObservableObject {
         }
         
         for (index, currency) in currencies.enumerated() where index != id && currency != nil {
-            guard let from = currencies[id]?.code, let to = currency?.code else { return }
-            guard let fromRate = exchangeRates[from], let toRate = exchangeRates[to] else { return }
-            let result = fixerFetcher.calculExchange(amount, from: fromRate, to: toRate)
-            formatter.numberStyle = .currency
-            formatter.currencyCode = to
-            amounts[index] = formatter.string(for: result)!
+            guard let from = currencies[id], let to = currency else { return }
+            _ = fixerFetcher.executeExchange(amount, from: from, to: to)
+                .sink(receiveCompletion: { print($0) }) { (result) in
+                    self.formatter.numberStyle = .currency
+                    self.formatter.currencyCode = to.code!
+                    self.amounts[index] = self.formatter.string(for: result)!
+                }
         }
     }
-
-    
-    private func getExchangeRates() {
-        guard exchangeRates.isEmpty else { return }
-        
-        fixerFetcher.getRates()
-            .sink { (completion) in
-                switch completion {
-                case .finished: break
-                case.failure(let error): print(error)
-                }
-            } receiveValue: { value in
-                self.exchangeRates = value
-            }
-            .store(in: &subscribers)
-
-    }
-    
-    
 }

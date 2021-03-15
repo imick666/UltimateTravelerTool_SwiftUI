@@ -22,6 +22,7 @@ struct SelectCurrencyView: View {
                 SearchBar(searchTerms: $searchTerms)
                 Button(action: {
                     self.endEditing()
+                    self.searchTerms = ""
                 }, label: {
                     Text("Cancel")
                 })

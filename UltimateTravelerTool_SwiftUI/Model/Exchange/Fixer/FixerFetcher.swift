@@ -14,7 +14,6 @@ final class FixerFetcher {
     
     private let httpHelper: HTTPRequestHelper
     private var rates: FixerResponse?
-    private var subcriber: AnyCancellable?
     
     // MARK: - Init
     
@@ -24,15 +23,28 @@ final class FixerFetcher {
     
     // MARK: - Methodes
     
-    func getRates() -> AnyPublisher<[String: Double], HTTPError> {
-        fetchFixer()
-            .map { $0.rates }
+    func executeExchange(_ amount: Double, from: Currency, to: Currency) -> AnyPublisher<Double, HTTPError> {
+        guard rates != nil else {
+            return fetchFixer()
+                .map {
+                    self.rates = $0
+                    return self.calculExchangeX(amount, from: from, to: to)
+                }
+                .eraseToAnyPublisher()
+        }
+        
+        return Just(calculExchangeX(amount, from: from, to: to))
+            .setFailureType(to: HTTPError.self)
             .eraseToAnyPublisher()
     }
     
-    func calculExchange(_ amout: Double, from: Double, to: Double) -> Double {
-        let amountInEuro = amout / from
-        return amountInEuro * to
+    private func calculExchangeX(_ amout: Double, from: Currency, to: Currency) -> Double {
+        let fromRate = rates?.rates[from.code!]
+        let toRate = rates?.rates[to.code!]
+        
+        let amountInEuro = amout / fromRate!
+        
+        return amountInEuro * toRate!
     }
 
     
