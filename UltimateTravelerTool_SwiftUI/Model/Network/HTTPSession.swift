@@ -19,7 +19,8 @@ protocol HTTPSession {
 final class HTTPSessionHelper: HTTPSession {
     
     func request(url: URL) -> AnyPublisher<Output, Failure> {
-        URLSession.shared.dataTaskPublisher(for: url)
+        print("network call")
+        return URLSession.shared.dataTaskPublisher(for: url)
             .receive(on: RunLoop.main)
             .eraseToAnyPublisher()
     }

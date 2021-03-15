@@ -13,10 +13,21 @@ struct SelectCurrencyView: View {
     
     @ObservedObject var viewModel: ExchangeViewModel
     @State var pickerSelection = 0
+    @State var searchTerms = ""
     var id: Int
     
     var body: some View {
         VStack {
+            HStack {
+                SearchBar(searchTerms: $searchTerms)
+                Button(action: {
+                    self.endEditing()
+                }, label: {
+                    Text("Cancel")
+                })
+                .padding(.trailing)
+            }
+            
             Picker("Sort :", selection: $pickerSelection) {
                 Text("By Countries")
                     .tag(0)
@@ -29,24 +40,20 @@ struct SelectCurrencyView: View {
             
             switch pickerSelection {
             case 0:
-                CountryListView(viewModel: viewModel) { currency in
+                CountryListView(viewModel: SelectCoutnryViewModel(restcountries: viewModel.restCountriesFetcher, searchTerms: searchTerms)) { currency in
                     viewModel.currencies[id] = currency
                     presentaion.wrappedValue.dismiss()
                     
                 }
                 .navigationTitle("Select a country")
             default:
-                CurrencyListView(viewModel: viewModel) { currency in
+                CurrencyListView(viewModel: SelectCurrencyViewModel(restcountries: viewModel.restCountriesFetcher, searchTerms: searchTerms)) { currency in
                     viewModel.currencies[id] = currency
                     presentaion.wrappedValue.dismiss()
                 }
                 .navigationTitle("Select a currency")
             }
         }
-        .onAppear(perform: {
-            viewModel.getCountries()
-            viewModel.getCurrecnies()
-        })
     }
 }
 

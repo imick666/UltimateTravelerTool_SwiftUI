@@ -17,8 +17,9 @@ final class ExchangeViewModel: ObservableObject {
     @Published var numberOfCurrencies = 2
     @Published var countriesList = [RestcountriesResponse]()
     @Published var currenciesList = [Currency]()
+    @Published var searchTerms: String = ""
     
-    private var restCountriesFetcher = RestcountriesFetcher()
+    private(set) var restCountriesFetcher = RestcountriesFetcher()
     private var exchangeRates = [String: Double]()
     private var fixerFetcher = FixerFetcher()
     private var formatter = NumberFormatter()
@@ -27,9 +28,24 @@ final class ExchangeViewModel: ObservableObject {
     
     // MARK: - Init
 
-    
+    init() {
+        
+        $searchTerms
+            .debounce(for: .milliseconds(800), scheduler: RunLoop.main)
+            .sink(receiveValue: { _ in self.sortCountries() })
+            .store(in: &subscribers)
+
+    }
     
     // MARK: - Methodes
+    
+    private func sortCountries() {
+        restCountriesFetcher.getCountries(searchTerms: searchTerms)
+            .sink { _ in }
+                receiveValue: { self.countriesList = $0 }
+            .store(in: &subscribers)
+
+    }
     
     func plusCurrency() {
         numberOfCurrencies += 1
@@ -46,40 +62,12 @@ final class ExchangeViewModel: ObservableObject {
         }
     }
     
-    func getCountries() {
-        guard countriesList.isEmpty else { return }
-        
-        restCountriesFetcher.getCountries()
-            .sink(receiveCompletion: { print($0)},
-                  receiveValue: { self.countriesList = $0 })
-            .store(in: &subscribers)
-
-    }
-    
-    func getCurrecnies() {
-        guard currenciesList.isEmpty else { return }
-        
-        restCountriesFetcher.getCurrencies()
-            .sink(receiveCompletion: {print($0) },
-                  receiveValue: { self.currenciesList = $0 })
-            .store(in: &subscribers)
-    }
-    
     func executeExchange(for id: Int) {
         guard let amount = Double(amounts[id]) else {
             for (index, _) in amounts.enumerated() where index != id {
                 amounts[index] = ""
             }
             return
-        }
-        
-        
-        if exchangeRates.isEmpty {
-            fixerFetcher.getRates()
-                .sink(receiveCompletion: { print($0)}) { exchanges in
-                    self.exchangeRates = exchanges
-                }
-                .store(in: &subscribers)
         }
         
         for (index, currency) in currencies.enumerated() where index != id && currency != nil {
@@ -91,4 +79,23 @@ final class ExchangeViewModel: ObservableObject {
             amounts[index] = formatter.string(for: result)!
         }
     }
+
+    
+    private func getExchangeRates() {
+        guard exchangeRates.isEmpty else { return }
+        
+        fixerFetcher.getRates()
+            .sink { (completion) in
+                switch completion {
+                case .finished: break
+                case.failure(let error): print(error)
+                }
+            } receiveValue: { value in
+                self.exchangeRates = value
+            }
+            .store(in: &subscribers)
+
+    }
+    
+    
 }

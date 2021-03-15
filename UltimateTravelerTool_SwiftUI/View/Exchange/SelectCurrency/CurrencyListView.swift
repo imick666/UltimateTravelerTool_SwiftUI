@@ -9,12 +9,12 @@ import SwiftUI
 
 struct CurrencyListView: View {
     
-    @ObservedObject var viewModel: ExchangeViewModel
+    @ObservedObject var viewModel: SelectCurrencyViewModel
     var didSelect: (Currency) -> Void
     
     var body: some View {
         List {
-            ForEach(viewModel.currenciesList) { currency in
+            ForEach(viewModel.currencies) { currency in
                 Button(action: {
                     didSelect(currency)
                 }, label: {
@@ -34,7 +34,7 @@ struct CurrencyListView: View {
 
 struct CurrencyListView_Previews: PreviewProvider {
     static var previews: some View {
-        CurrencyListView(viewModel: ExchangeViewModel()) { _ in
+        CurrencyListView(viewModel: SelectCurrencyViewModel(restcountries: RestcountriesFetcher())) { _ in
             
         }
     }

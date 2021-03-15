@@ -13,6 +13,8 @@ final class FixerFetcher {
     // MARK: - Properties
     
     private let httpHelper: HTTPRequestHelper
+    private var rates: FixerResponse?
+    private var subcriber: AnyCancellable?
     
     // MARK: - Init
     
@@ -36,7 +38,7 @@ final class FixerFetcher {
     
     private func fetchFixer() -> AnyPublisher<FixerResponse, HTTPError> {
         httpHelper.make(url: getUrl())
-
+            
     }
     
     private func getUrl() -> URL {

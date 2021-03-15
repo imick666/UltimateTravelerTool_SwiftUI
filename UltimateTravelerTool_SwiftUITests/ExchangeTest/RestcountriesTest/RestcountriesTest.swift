@@ -28,7 +28,7 @@ class RestcountriesTest: XCTestCase {
     func testBadResponse() {
         urlSession = MokeHTTPSession(data: datas, responseType: .badResponse)
         
-        _ = countriesFetcher.getCountries()
+        _ = countriesFetcher.getCountries(searchTerms: "")
             .sink { (completion) in
                 guard case .failure(let error) = completion else {
                     XCTFail()
@@ -44,7 +44,7 @@ class RestcountriesTest: XCTestCase {
     func testError() {
         urlSession = MokeHTTPSession(data: datas, responseType: .error)
 
-        _ = countriesFetcher.getCountries()
+        _ = countriesFetcher.getCountries(searchTerms: "")
             .sink { completion in
                 guard case .failure(let error) = completion else {
                     XCTFail()
@@ -60,7 +60,7 @@ class RestcountriesTest: XCTestCase {
     func testBadData() {
         urlSession = MokeHTTPSession(data: datas, responseType: .badData)
 
-        _ = countriesFetcher.getCountries()
+        _ = countriesFetcher.getCountries(searchTerms: "")
             .sink(receiveCompletion: { completion in
                 guard case .failure(let error) = completion else {
                     XCTFail()
@@ -76,7 +76,7 @@ class RestcountriesTest: XCTestCase {
     func testCountries() {
         urlSession = MokeHTTPSession(data: datas, responseType: .goddData)
         
-        _ = countriesFetcher.getCountries()
+        _ = countriesFetcher.getCountries(searchTerms: "")
             .sink(receiveCompletion: { completion in
                 guard case .finished = completion else {
                     XCTFail()
@@ -85,9 +85,31 @@ class RestcountriesTest: XCTestCase {
                 self.expactation.fulfill()
             }, receiveValue: { data in
                 XCTAssertNotNil(data)
-                XCTAssertTrue(data.contains(where: {$0.currencies.contains(where: { $0.code != nil || $0.code?.count != 3 })}))
+                XCTAssertTrue(data.allSatisfy({$0.currencies.contains(where: { $0.code != nil || $0.code?.count != 3 })}))
                 XCTAssertTrue(data.allSatisfy({ $0.id != nil }))
-                XCTAssertTrue(data.contains(where: { $0.currencies.allSatisfy({ $0.id != nil})}))
+                XCTAssertTrue(data.allSatisfy({ $0.currencies.allSatisfy({ $0.id != nil})}))
+            })
+
+        wait(for: [expactation], timeout: 0.01)
+
+    }
+    
+    func testCountriesWithSearch() {
+        urlSession = MokeHTTPSession(data: datas, responseType: .goddData)
+        
+        _ = countriesFetcher.getCountries(searchTerms: "france")
+            .sink(receiveCompletion: { completion in
+                guard case .finished = completion else {
+                    XCTFail()
+                    return
+                }
+                self.expactation.fulfill()
+            }, receiveValue: { data in
+                XCTAssertNotNil(data)
+                XCTAssertTrue(data.allSatisfy({$0.currencies.contains(where: { $0.code != nil || $0.code?.count != 3 })}))
+                XCTAssertTrue(data.allSatisfy({ $0.id != nil }))
+                XCTAssertTrue(data.allSatisfy({ $0.currencies.allSatisfy({ $0.id != nil})}))
+                XCTAssertEqual(data.count, 1)
             })
 
         wait(for: [expactation], timeout: 0.01)
@@ -97,7 +119,7 @@ class RestcountriesTest: XCTestCase {
     func testCurrencies() {
         urlSession = MokeHTTPSession(data: datas, responseType: .goddData)
         
-        _ = countriesFetcher.getCurrencies()
+        _ = countriesFetcher.getCurrencies(searchTerms: "")
             .sink(receiveCompletion: { completion in
                 guard case .finished = completion else {
                     XCTFail()
@@ -106,9 +128,30 @@ class RestcountriesTest: XCTestCase {
                 self.expactation.fulfill()
             }, receiveValue: { data in
                 XCTAssertNotNil(data)
-                XCTAssertTrue(data.contains(where: { $0.code != nil}))
-                XCTAssertTrue(data.contains(where: { $0.name != nil}))
+                XCTAssertTrue(data.allSatisfy({ $0.code != nil}))
+                XCTAssertTrue(data.allSatisfy({ $0.name != nil}))
                 XCTAssertTrue(data.allSatisfy({ $0.id != nil }))
+            })
+
+        wait(for: [expactation], timeout: 0.01)
+    }
+    
+    func testCurrenciesWithSearch() {
+        urlSession = MokeHTTPSession(data: datas, responseType: .goddData)
+        
+        _ = countriesFetcher.getCurrencies(searchTerms: "Euro")
+            .sink(receiveCompletion: { completion in
+                guard case .finished = completion else {
+                    XCTFail()
+                    return
+                }
+                self.expactation.fulfill()
+            }, receiveValue: { data in
+                XCTAssertNotNil(data)
+                XCTAssertTrue(data.allSatisfy({ $0.code != nil}))
+                XCTAssertTrue(data.allSatisfy({ $0.name != nil}))
+                XCTAssertTrue(data.allSatisfy({ $0.id != nil }))
+                XCTAssertEqual(data.count, 1)
             })
 
         wait(for: [expactation], timeout: 0.01)
