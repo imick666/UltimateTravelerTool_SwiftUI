@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CurrencyListView: View {
     
-    @ObservedObject var viewModel: SelectCurrencyViewModel
+    @ObservedObject var viewModel: SelectViewModel
     var didSelect: (Currency) -> Void
     
     var body: some View {
@@ -34,7 +34,7 @@ struct CurrencyListView: View {
 
 struct CurrencyListView_Previews: PreviewProvider {
     static var previews: some View {
-        CurrencyListView(viewModel: SelectCurrencyViewModel(restcountries: RestcountriesFetcher())) { _ in
+        CurrencyListView(viewModel: SelectViewModel(delegate: ExchangeViewModel())) { _ in
             
         }
     }

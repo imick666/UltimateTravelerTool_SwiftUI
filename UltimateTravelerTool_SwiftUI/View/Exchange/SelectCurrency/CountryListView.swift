@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CountryListView: View {
     
-    @ObservedObject var viewModel: SelectCoutnryViewModel
+    @ObservedObject var viewModel: SelectViewModel
     var didSelect: (Currency) -> Void
     
     var body: some View {
@@ -35,7 +35,7 @@ struct CountryListView: View {
 
 struct CountryListView_Previews: PreviewProvider {
     static var previews: some View {
-        CountryListView(viewModel: SelectCoutnryViewModel(restcountries: RestcountriesFetcher())) { _ in
+        CountryListView(viewModel: SelectViewModel(delegate: ExchangeViewModel())) { _ in
             
         }
     }

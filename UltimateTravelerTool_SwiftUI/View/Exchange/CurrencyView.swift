@@ -27,7 +27,7 @@ struct CurrencyView: View {
                 .keyboardType(.decimalPad)
             
             NavigationLink(
-                destination: SelectCurrencyView(viewModel: viewModel, id: id),
+                destination: SelectCurrencyView(viewModel: SelectViewModel(delegate: viewModel), id: id),
                 isActive: $selectCurrencyIdActive,
                 label: {
                     Text(viewModel.currencies[id]?.code ?? "Select a currency")

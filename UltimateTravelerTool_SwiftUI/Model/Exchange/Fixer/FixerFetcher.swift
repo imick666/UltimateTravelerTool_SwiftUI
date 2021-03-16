@@ -13,7 +13,7 @@ final class FixerFetcher {
     // MARK: - Properties
     
     private let httpHelper: HTTPRequestHelper
-    private var rates: FixerResponse?
+    private var rates = [String: Double]()
     
     // MARK: - Init
     
@@ -24,23 +24,24 @@ final class FixerFetcher {
     // MARK: - Methodes
     
     func executeExchange(_ amount: Double, from: Currency, to: Currency) -> AnyPublisher<Double, HTTPError> {
-        guard rates != nil else {
+        guard !rates.isEmpty else {
+            print("rates are empty")
             return fetchFixer()
                 .map {
-                    self.rates = $0
-                    return self.calculExchangeX(amount, from: from, to: to)
+                    self.rates = $0.rates
+                    return self.calculExchange(amount, from: from, to: to)
                 }
                 .eraseToAnyPublisher()
         }
         
-        return Just(calculExchangeX(amount, from: from, to: to))
+        return Just(calculExchange(amount, from: from, to: to))
             .setFailureType(to: HTTPError.self)
             .eraseToAnyPublisher()
     }
     
-    private func calculExchangeX(_ amout: Double, from: Currency, to: Currency) -> Double {
-        let fromRate = rates?.rates[from.code!]
-        let toRate = rates?.rates[to.code!]
+    private func calculExchange(_ amout: Double, from: Currency, to: Currency) -> Double {
+        let fromRate = rates[from.code!]
+        let toRate = rates[to.code!]
         
         let amountInEuro = amout / fromRate!
         

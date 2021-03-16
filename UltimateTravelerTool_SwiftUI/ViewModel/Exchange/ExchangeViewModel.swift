@@ -8,6 +8,10 @@
 import SwiftUI
 import Combine
 
+protocol exchangeDelegate {
+    func didSelectCurrency(_ currency: Currency, for id: Int)
+}
+
 final class ExchangeViewModel: ObservableObject {
     
     // MARK: - Properties
@@ -15,10 +19,11 @@ final class ExchangeViewModel: ObservableObject {
     @Published var amounts = ["", ""]
     @Published var currencies: [Currency?] = [nil, nil]
     @Published var numberOfCurrencies = 2
-    
-    private(set) var restCountriesFetcher = RestcountriesFetcher()
+
     private var fixerFetcher = FixerFetcher()
     private var formatter = NumberFormatter()
+    
+    private var subscribers = Set<AnyCancellable>()
     
     // MARK: - Init
 
@@ -53,12 +58,19 @@ final class ExchangeViewModel: ObservableObject {
         
         for (index, currency) in currencies.enumerated() where index != id && currency != nil {
             guard let from = currencies[id], let to = currency else { return }
-            _ = fixerFetcher.executeExchange(amount, from: from, to: to)
+            fixerFetcher.executeExchange(amount, from: from, to: to)
                 .sink(receiveCompletion: { print($0) }) { (result) in
                     self.formatter.numberStyle = .currency
                     self.formatter.currencyCode = to.code!
                     self.amounts[index] = self.formatter.string(for: result)!
                 }
+                .store(in: &subscribers)
         }
+    }
+}
+
+extension ExchangeViewModel: exchangeDelegate {
+    func didSelectCurrency(_ currency: Currency, for id: Int) {
+        currencies[id] = currency
     }
 }

@@ -11,23 +11,13 @@ struct SelectCurrencyView: View {
     
     @Environment(\.presentationMode) var presentaion
     
-    @ObservedObject var viewModel: ExchangeViewModel
+    @ObservedObject var viewModel: SelectViewModel
     @State var pickerSelection = 0
-    @State var searchTerms = ""
     var id: Int
     
     var body: some View {
         VStack {
-            HStack {
-                SearchBar(searchTerms: $searchTerms)
-                Button(action: {
-                    self.endEditing()
-                    self.searchTerms = ""
-                }, label: {
-                    Text("Cancel")
-                })
-                .padding(.trailing)
-            }
+            SearchBar(searchTerms: $viewModel.searchTerms)
             
             Picker("Sort :", selection: $pickerSelection) {
                 Text("By Countries")
@@ -41,25 +31,26 @@ struct SelectCurrencyView: View {
             
             switch pickerSelection {
             case 0:
-                CountryListView(viewModel: SelectCoutnryViewModel(restcountries: viewModel.restCountriesFetcher, searchTerms: searchTerms)) { currency in
-                    viewModel.currencies[id] = currency
+                CountryListView(viewModel: viewModel) { currency in
+                    viewModel.exchangeDelegate.didSelectCurrency(currency, for: id)
                     presentaion.wrappedValue.dismiss()
                     
                 }
                 .navigationTitle("Select a country")
             default:
-                CurrencyListView(viewModel: SelectCurrencyViewModel(restcountries: viewModel.restCountriesFetcher, searchTerms: searchTerms)) { currency in
-                    viewModel.currencies[id] = currency
+                CurrencyListView(viewModel: viewModel) { currency in
+                    viewModel.exchangeDelegate.didSelectCurrency(currency, for: id)
                     presentaion.wrappedValue.dismiss()
                 }
                 .navigationTitle("Select a currency")
             }
         }
+
     }
 }
 
 struct SelectCurrencyView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectCurrencyView(viewModel: ExchangeViewModel(), id: 0)
+        SelectCurrencyView(viewModel: SelectViewModel(delegate: ExchangeViewModel()), id: 0)
     }
 }
