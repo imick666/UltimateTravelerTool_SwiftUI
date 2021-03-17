@@ -95,7 +95,7 @@ final class RestcountriesFetcher {
     
     
     private func fetchRestCountries() -> AnyPublisher<[RestcountriesResponse], HTTPError> {
-        httpHelper.make(url: getUrl())
+        httpHelper.fetchJson(url: getUrl())
     }
     
     private func getUrl() -> URL {

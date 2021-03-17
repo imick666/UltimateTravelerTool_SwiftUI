@@ -8,7 +8,6 @@
 import Foundation
 import Combine
 
-
 final class HTTPRequestHelper {
     
     private let session: HTTPSession
@@ -17,7 +16,7 @@ final class HTTPRequestHelper {
         self.session = session
     }
     
-    func make<T: Decodable>(url: URL) -> AnyPublisher<T, HTTPError> {
+    func fetchJson<T: Decodable>(url: URL) -> AnyPublisher<T, HTTPError> {
         session.request(url: url)
             .tryMap {
                 guard let response = $0.response as? HTTPURLResponse, response.statusCode == 200 else {
@@ -35,5 +34,24 @@ final class HTTPRequestHelper {
                 }
             }
             .eraseToAnyPublisher()
+    }
+    
+    func fetchData(url: URL) -> AnyPublisher<Data, HTTPError> {
+        session.request(url: url)
+            .tryMap {
+                guard let response = $0.response as? HTTPURLResponse, response.statusCode == 200 else {
+                    throw HTTPError.badResponse
+                }
+                
+                return $0.data
+            }
+            .mapError { error in
+                switch error {
+                case is HTTPError: return error as! HTTPError
+                default: return HTTPError.otherError
+                }
+            }
+            .eraseToAnyPublisher()
+        
     }
 }

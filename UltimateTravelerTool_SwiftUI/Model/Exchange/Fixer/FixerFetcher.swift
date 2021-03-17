@@ -50,7 +50,7 @@ final class FixerFetcher {
 
     
     private func fetchFixer() -> AnyPublisher<FixerResponse, HTTPError> {
-        httpHelper.make(url: getUrl())
+        httpHelper.fetchJson(url: getUrl())
             
     }
     

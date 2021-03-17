@@ -28,12 +28,10 @@ struct Current: Codable {
     let dt: Int
     let sunrise, sunset: Int?
     let temp: Double
-    let clouds: Int
     let weather: [Weather]
 
     enum CodingKeys: String, CodingKey {
         case dt, sunrise, sunset, temp
-        case clouds
         case weather
     }
 }

@@ -20,11 +20,30 @@ final class WeatherFetcher {
         fetchWeather(for: location)
     }
     
+    func getIcon(for id: String) -> AnyPublisher<Data, HTTPError> {
+        guard let url = getIconUrl(for: id) else { return Fail(outputType: Data.self, failure: HTTPError.badUrl).eraseToAnyPublisher() }
+        
+        return httpHelper.fetchData(url: url)
+            .eraseToAnyPublisher()
+            
+    }
+    
     private func fetchWeather(for location: (lat: String, lon: String)) -> AnyPublisher<WeatherResponse, HTTPError> {
         guard let url = getUrl(for: location) else { return Fail(outputType: WeatherResponse.self, failure: HTTPError.badUrl).eraseToAnyPublisher() }
         
-        return httpHelper.make(url: url)
+        return httpHelper.fetchJson(url: url)
             .eraseToAnyPublisher()
+    }
+    
+    private func getIconUrl(for id: String) -> URL? {
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "openweathermap.org"
+        components.path = "/img/wn/"
+        components.query = "\(id)@2x.png"
+        
+        return components.url
+        
     }
     
     private func getUrl(for location: (lat: String, lon: String)) -> URL? {
