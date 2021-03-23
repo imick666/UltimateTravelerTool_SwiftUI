@@ -11,28 +11,39 @@ struct WeatherCell: View {
     
     @ObservedObject var viewModel: WeatherCellViewModel
     
+    private var currentWather: CurrentWeatherViewModel {
+        return viewModel.weather.current
+    }
+    
     var body: some View {
-        
-        HStack {
-            VStack(alignment: .leading) {
-                Text("hello World!")
-                Spacer()
-                Text(viewModel.weather.current.description)
-            }
-            .padding(.leading)
-            
-            Spacer()
-            
-            HStack {
-                Text(viewModel.weather.current.temp)
-                viewModel.weather.current.icon
-                    .resizable()
-                    .renderingMode(.original)
-                    .aspectRatio(contentMode: .fit)
-            }
-            .padding(.trailing)
-        }
-        
+        NavigationLink(
+            destination: WeatherDetailView(viewModel: WeatherDetailViewModel(weather: WeatherViewModel.placeholder)),
+            label: {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("hello World!")
+                            .font(.title2)
+                            .foregroundColor(.black)
+                        Text(currentWather.description)
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                    .padding(.leading)
+                    
+                    Spacer()
+                    
+                    HStack {
+                        Text(currentWather.temp)
+                        Image(systemName: currentWather.iconName)
+                            .renderingMode(.original)
+                            .resizable()
+                            .aspectRatio(1, contentMode: .fit)
+                            .frame(height: 50)
+                            
+                    }
+                    .padding(.trailing)
+                }
+            })
     }
 }
 
@@ -40,6 +51,5 @@ struct WeatherCell_Previews: PreviewProvider {
     static var previews: some View {
         WeatherCell(viewModel: WeatherCellViewModel(weather: WeatherViewModel.placeholder))
             .previewLayout(.sizeThatFits)
-            .frame(height: 50)
     }
 }

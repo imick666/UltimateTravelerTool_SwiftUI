@@ -16,7 +16,7 @@ final class WeatherListViewModel: ObservableObject {
     private var subscriptions = Set<AnyCancellable>()
     
     init() {
-        
+        weathers.append(WeatherViewModel.placeholder)
     }
     
 }

@@ -7,19 +7,38 @@
 
 import Foundation
 
-extension Date {
+extension Int {
     
-    var day: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        return formatter.string(from: self)
+    enum ReturnStyle: String {
+        case day = "EEEE"
+        case hour = "HH"
+        case hourMinutes = "HH:mm"
     }
     
-    var hours: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH"
+    func dateString(timeOffset: Int, returnStyle: ReturnStyle) -> String {
         
-        return formatter.string(from: self)
+        #if DEBUG
+        let now = Date(timeIntervalSince1970: 1615917960)
+        #else
+        let now = Date().addingTimeInterval(TimeInterval(timeOffset))
+        #endif
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = returnStyle.rawValue
+        let timeZone = TimeZone(secondsFromGMT: timeOffset)
+        formatter.timeZone = timeZone!
+        
+        let date = Date(timeIntervalSince1970: Double(self))
+        
+        let interval = Int(date.timeIntervalSince(now))
+        
+        if interval % 3600 < 1 && returnStyle == .hour { return "Now" }
+        else if interval < 86400 && returnStyle == .day { return "Today" }
+        else {
+            switch returnStyle {
+            case .day, .hourMinutes: return formatter.string(from: date)
+            case.hour: return formatter.string(from: date) + " h"
+            }
+         }
     }
-    
 }

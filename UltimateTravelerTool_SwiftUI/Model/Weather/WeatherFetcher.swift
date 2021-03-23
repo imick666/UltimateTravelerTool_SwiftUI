@@ -39,8 +39,7 @@ final class WeatherFetcher {
         var components = URLComponents()
         components.scheme = "https"
         components.host = "openweathermap.org"
-        components.path = "/img/wn/"
-        components.query = "\(id)@2x.png"
+        components.path = "/img/wn/\(id)@2x.png"
         
         return components.url
         

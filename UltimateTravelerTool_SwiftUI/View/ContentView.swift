@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     
     @State var selectedTab = 0
+    @State var title = ""
     
     var body: some View {
         NavigationView {
@@ -18,7 +19,8 @@ struct ContentView: View {
                     .tabItem {
                         Text("Exchange")
                     }.tag(0)
-                Text("Weather View")
+                    .navigationBarHidden(true)
+                WeatherListView(viewModel: WeatherListViewModel())
                     .tabItem {
                         Text("Weather")
                     }.tag(1)
@@ -27,6 +29,13 @@ struct ContentView: View {
                         Text("Translate")
                     }.tag(2)
             }
+            .onChange(of: selectedTab, perform: { value in
+                switch value {
+                case 1: self.title = "Weather"
+                default: self.title = ""
+                }
+            })
+            .navigationTitle(title)
         }
     }
 }

@@ -39,31 +39,32 @@ struct Current: Codable {
 // MARK: - Weather
 struct Weather: Codable {
     let id: Int
-    let main: Main
-    let weatherDescription: Description
-    let icon: String
-
-    enum CodingKeys: String, CodingKey {
-        case id, main
-        case weatherDescription = "description"
-        case icon
+    let main: String
+    let description: String
+    let iconId: String
+    var iconName: String {
+        switch iconId {
+        case "01d": return "sun.max.fill"
+        case "01n": return "moon.stars.fill"
+        case "02d": return "cloud.sun.fill"
+        case "02n": return "cloud.moon.fill"
+        case "03d", "03n", "04d", "04n": return "cloud.fill"
+        case "09d", "09n": return "cloud.rain.fill"
+        case "10d": return "cloud.sun.rain.fill"
+        case "10n": return "cloud.moon.rain.fill"
+        case "11d": return "cloud.sun.bolt.fill"
+        case "11n": return "cloud.moon.bolt.fill"
+        case "13d", "13n": return "snow"
+        case "50d", "50n": return "smoke.fill"
+            
+        default: return "exclamationmark.icloud.fill"
+        }
     }
-}
-
-enum Main: String, Codable {
-    case clear = "Clear"
-    case clouds = "Clouds"
-    case rain = "Rain"
-}
-
-enum Description: String, Codable {
-    case brokenClouds = "broken clouds"
-    case clearSky = "clear sky"
-    case fewClouds = "few clouds"
-    case lightRain = "light rain"
-    case moderateRain = "moderate rain"
-    case overcastClouds = "overcast clouds"
-    case scatteredClouds = "scattered clouds"
+    
+    enum CodingKeys: String, CodingKey {
+        case id, main, description
+        case iconId = "icon"
+    }
 }
 
 // MARK: - Daily
