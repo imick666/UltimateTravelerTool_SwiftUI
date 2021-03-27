@@ -32,6 +32,8 @@
 		E0445C4225FB9D3F00735DA8 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0445C4125FB9D3F00735DA8 /* SearchBar.swift */; };
 		E055340A260E23D600388F30 /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0553409260E23D600388F30 /* WeatherViewModel.swift */; };
 		E055340F260E3AC200388F30 /* Double+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E055340E260E3AC200388F30 /* Double+String.swift */; };
+		E05E83E9260F78B3003D1F1C /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05E83E8260F78B3003D1F1C /* LocationService.swift */; };
+		E05E83EE260F817E003D1F1C /* LocalSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05E83ED260F817E003D1F1C /* LocalSearchService.swift */; };
 		E08965C325FA6A06007A2EE1 /* RestcountriesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F071725E9662A004A1748 /* RestcountriesTest.swift */; };
 		E0A8FC8425E565EE001783D3 /* UltimateTravelerTool_SwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8FC8325E565EE001783D3 /* UltimateTravelerTool_SwiftUIApp.swift */; };
 		E0A8FC8625E565EE001783D3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8FC8525E565EE001783D3 /* ContentView.swift */; };
@@ -101,6 +103,8 @@
 		E0445C4125FB9D3F00735DA8 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		E0553409260E23D600388F30 /* WeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherViewModel.swift; sourceTree = "<group>"; };
 		E055340E260E3AC200388F30 /* Double+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+String.swift"; sourceTree = "<group>"; };
+		E05E83E8260F78B3003D1F1C /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		E05E83ED260F817E003D1F1C /* LocalSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalSearchService.swift; sourceTree = "<group>"; };
 		E0A8FC8025E565EE001783D3 /* UltimateTravelerTool_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UltimateTravelerTool_SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0A8FC8325E565EE001783D3 /* UltimateTravelerTool_SwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UltimateTravelerTool_SwiftUIApp.swift; sourceTree = "<group>"; };
 		E0A8FC8525E565EE001783D3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -170,6 +174,7 @@
 		E0171BBD2601260600A0B404 /* Weather */ = {
 			isa = PBXGroup;
 			children = (
+				E05E83E7260F78A0003D1F1C /* Location */,
 				E0171BBE2601261800A0B404 /* WeatherFetcher.swift */,
 				E0171BC32601262100A0B404 /* WeatherResponse.swift */,
 				E0F86C552605643A0037DBBE /* Weather.json */,
@@ -300,6 +305,15 @@
 				E0171B9D25FFA0DB00A0B404 /* SelectViewModel.swift */,
 			);
 			path = Exchange;
+			sourceTree = "<group>";
+		};
+		E05E83E7260F78A0003D1F1C /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				E05E83E8260F78B3003D1F1C /* LocationService.swift */,
+				E05E83ED260F817E003D1F1C /* LocalSearchService.swift */,
+			);
+			path = Location;
 			sourceTree = "<group>";
 		};
 		E061EADE25EA7423001D981B /* SelectCurrency */ = {
@@ -582,6 +596,7 @@
 				E0BF874A260F6CD100AE8824 /* WeatherDetailView.swift in Sources */,
 				E0171B9E25FFA0DB00A0B404 /* SelectViewModel.swift in Sources */,
 				E02F06D925E938E4004A1748 /* RestcountriesFetcher.swift in Sources */,
+				E05E83EE260F817E003D1F1C /* LocalSearchService.swift in Sources */,
 				E0CA5AFD25EC0BD600F1449B /* CurrencyListView.swift in Sources */,
 				E0A8FC8625E565EE001783D3 /* ContentView.swift in Sources */,
 				E0171C052602534700A0B404 /* Date+String.swift in Sources */,
@@ -600,6 +615,7 @@
 				E0445C4225FB9D3F00735DA8 /* SearchBar.swift in Sources */,
 				E0CA5AF325EC048000F1449B /* SelectCurrencyView.swift in Sources */,
 				E02F06CD25E93460004A1748 /* HTTPHelper.swift in Sources */,
+				E05E83E9260F78B3003D1F1C /* LocationService.swift in Sources */,
 				E055340A260E23D600388F30 /* WeatherViewModel.swift in Sources */,
 				E02F06EE25E93FEE004A1748 /* FixerResponse.swift in Sources */,
 				E0BF8742260F5DDA00AE8824 /* WeatherCellView.swift in Sources */,

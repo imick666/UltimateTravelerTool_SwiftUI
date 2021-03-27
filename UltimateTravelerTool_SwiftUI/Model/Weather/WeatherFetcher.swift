@@ -16,8 +16,10 @@ final class WeatherFetcher {
         self.httpHelper = httpHelper
     }
     
-    func getWeather(for location: (lat: String, lon: String)) -> AnyPublisher<WeatherViewModel, HTTPError> {
-        fetchWeather(for: location)
+    func getWeather(for location: (lat: Double, lon: Double)) -> AnyPublisher<WeatherViewModel, HTTPError> {
+        let location = (lat: "\(location.lat)", lon: "\(location.lon)")
+        
+        return fetchWeather(for: location)
             .map { WeatherViewModel(weather: $0) }
             .eraseToAnyPublisher()
     }

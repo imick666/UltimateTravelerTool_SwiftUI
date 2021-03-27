@@ -22,6 +22,7 @@ final class WeatherViewModel: Identifiable, ObservableObject {
     @Published var daily = [DailyWeatherViewData]()
     @Published var isCurrentLocation = false
     
+    private var localSearchService: LocalSearchService
     private var subsciptions = Set<AnyCancellable>()
     
     init (weather: WeatherResponse) {
@@ -29,8 +30,15 @@ final class WeatherViewModel: Identifiable, ObservableObject {
         self.lat = weather.lat
         self.timeOffset = weather.timezoneOffset
         self.current = CurrentWeatherViewData(from: weather)
+        self.localSearchService = LocalSearchService()
         self.hourly = getHourl(from: weather)
         self.daily = getDaily(from: weather)
+        
+        localSearchService.cityNamePublisher
+            .sink(receiveValue: { self.city = $0 })
+            .store(in: &subsciptions)
+        
+        localSearchService.getCityName(with: (lat, lon))
     }
     
     private func getHourl(from weather: WeatherResponse) -> [HourlyWeatherViewData] {

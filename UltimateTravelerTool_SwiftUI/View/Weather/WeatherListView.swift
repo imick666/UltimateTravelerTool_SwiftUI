@@ -17,9 +17,18 @@ struct WeatherListView: View {
     
     var body: some View {
         NavigationView {
-            List(viewModel.weathers) { weather in
-                WeatherCellView(viewModel: weather)
+            
+            List {
+                ForEach(viewModel.weathers) { weather in
+                    if viewModel.locaWeather != nil {
+                        WeatherCellView(viewModel: viewModel.locaWeather!)
+                    }
+                    
+                    WeatherCellView(viewModel: weather)
+
+                }
             }
+            .listStyle(PlainListStyle())
             
             .navigationTitle("Weather")
             .toolbar(content: {
@@ -30,6 +39,9 @@ struct WeatherListView: View {
                 })
             })
         }
+        .onAppear(perform: {
+            viewModel.getUserWeather()
+        })
     }
 }
 
