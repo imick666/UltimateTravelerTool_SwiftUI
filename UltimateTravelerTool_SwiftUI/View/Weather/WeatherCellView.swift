@@ -10,14 +10,20 @@ import SwiftUI
 struct WeatherCellView: View {
     
     @ObservedObject var viewModel: WeatherViewModel
+    var isCurrentLocation: Bool = false
     
     @State private var sheetIsPresented = false
     var body: some View {
         Button(action: { self.sheetIsPresented.toggle()}) {
             HStack {
                 VStack(alignment: .leading) {
-                    Text(viewModel.city)
-                        .font(.headline)
+                    Label(
+                        title: {
+                            Text(viewModel.city)
+                                .font(.headline)
+                        },
+                        icon: { isCurrentLocation ? Image(systemName: "location.fill") : nil })
+
                     Text(viewModel.current.description)
                         .font((.subheadline))
                         .foregroundColor(.secondary)

@@ -11,6 +11,8 @@ struct WeatherListView: View {
     
     @ObservedObject var viewModel: WeatherListViewModel
     
+    @State var searchIsShown = false
+    
     init() {
         self.viewModel = WeatherListViewModel()
     }
@@ -20,8 +22,8 @@ struct WeatherListView: View {
             
             List {
                 ForEach(viewModel.weathers) { weather in
-                    if viewModel.locaWeather != nil {
-                        WeatherCellView(viewModel: viewModel.locaWeather!)
+                    if viewModel.localWeather != nil {
+                        WeatherCellView(viewModel: viewModel.localWeather!, isCurrentLocation: true)
                     }
                     
                     WeatherCellView(viewModel: weather)
@@ -33,7 +35,7 @@ struct WeatherListView: View {
             .navigationTitle("Weather")
             .toolbar(content: {
                 Button(action: {
-                    
+                    self.searchIsShown.toggle()
                 }, label: {
                     Image(systemName: "magnifyingglass")
                 })
@@ -41,6 +43,9 @@ struct WeatherListView: View {
         }
         .onAppear(perform: {
             viewModel.getUserWeather()
+        })
+        .sheet(isPresented: $searchIsShown, content: {
+            WeatherSearchView(viewModel: WeatherSearchViewModel())
         })
     }
 }

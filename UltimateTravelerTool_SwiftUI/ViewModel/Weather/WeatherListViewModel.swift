@@ -10,7 +10,7 @@ import Combine
 
 final class WeatherListViewModel: ObservableObject {
     
-    @Published var locaWeather: WeatherViewModel?
+    @Published var localWeather: WeatherViewModel?
     @Published var weathers = [WeatherViewModel]()
     
     private var locationService: LocationService
@@ -23,11 +23,12 @@ final class WeatherListViewModel: ObservableObject {
         locationService.locationServicePublisher
             .flatMap { $0 }
             .sink(receiveCompletion: { print($0) },
-                  receiveValue: { self.locaWeather = $0 })
+                  receiveValue: { self.localWeather = $0 })
             .store(in: &subscriptions)
     }
     
     public func getUserWeather() {
+        guard localWeather == nil else { return }
         locationService.getUserLocationWeather()
     }
 }

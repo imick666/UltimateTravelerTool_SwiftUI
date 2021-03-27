@@ -34,6 +34,8 @@
 		E055340F260E3AC200388F30 /* Double+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E055340E260E3AC200388F30 /* Double+String.swift */; };
 		E05E83E9260F78B3003D1F1C /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05E83E8260F78B3003D1F1C /* LocationService.swift */; };
 		E05E83EE260F817E003D1F1C /* LocalSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05E83ED260F817E003D1F1C /* LocalSearchService.swift */; };
+		E05E83F6260F93BE003D1F1C /* WeatherSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05E83F5260F93BE003D1F1C /* WeatherSearchView.swift */; };
+		E05E83FB260F93CA003D1F1C /* WeatherSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05E83FA260F93CA003D1F1C /* WeatherSearchViewModel.swift */; };
 		E08965C325FA6A06007A2EE1 /* RestcountriesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02F071725E9662A004A1748 /* RestcountriesTest.swift */; };
 		E0A8FC8425E565EE001783D3 /* UltimateTravelerTool_SwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8FC8325E565EE001783D3 /* UltimateTravelerTool_SwiftUIApp.swift */; };
 		E0A8FC8625E565EE001783D3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A8FC8525E565EE001783D3 /* ContentView.swift */; };
@@ -105,6 +107,8 @@
 		E055340E260E3AC200388F30 /* Double+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+String.swift"; sourceTree = "<group>"; };
 		E05E83E8260F78B3003D1F1C /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		E05E83ED260F817E003D1F1C /* LocalSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalSearchService.swift; sourceTree = "<group>"; };
+		E05E83F5260F93BE003D1F1C /* WeatherSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSearchView.swift; sourceTree = "<group>"; };
+		E05E83FA260F93CA003D1F1C /* WeatherSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSearchViewModel.swift; sourceTree = "<group>"; };
 		E0A8FC8025E565EE001783D3 /* UltimateTravelerTool_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UltimateTravelerTool_SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0A8FC8325E565EE001783D3 /* UltimateTravelerTool_SwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UltimateTravelerTool_SwiftUIApp.swift; sourceTree = "<group>"; };
 		E0A8FC8525E565EE001783D3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -167,6 +171,7 @@
 				E0BF8737260F5BA400AE8824 /* WeatherListView.swift */,
 				E0BF8741260F5DDA00AE8824 /* WeatherCellView.swift */,
 				E0BF8749260F6CD100AE8824 /* WeatherDetailView.swift */,
+				E05E83F5260F93BE003D1F1C /* WeatherSearchView.swift */,
 			);
 			path = Weather;
 			sourceTree = "<group>";
@@ -197,6 +202,7 @@
 		E0171BE12601385900A0B404 /* Weather */ = {
 			isa = PBXGroup;
 			children = (
+				E05E83FA260F93CA003D1F1C /* WeatherSearchViewModel.swift */,
 				E0553409260E23D600388F30 /* WeatherViewModel.swift */,
 				E0BF873C260F5BB600AE8824 /* WeatherListViewModel.swift */,
 			);
@@ -595,8 +601,10 @@
 				E0BF8738260F5BA400AE8824 /* WeatherListView.swift in Sources */,
 				E0BF874A260F6CD100AE8824 /* WeatherDetailView.swift in Sources */,
 				E0171B9E25FFA0DB00A0B404 /* SelectViewModel.swift in Sources */,
+				E05E83F6260F93BE003D1F1C /* WeatherSearchView.swift in Sources */,
 				E02F06D925E938E4004A1748 /* RestcountriesFetcher.swift in Sources */,
 				E05E83EE260F817E003D1F1C /* LocalSearchService.swift in Sources */,
+				E05E83FB260F93CA003D1F1C /* WeatherSearchViewModel.swift in Sources */,
 				E0CA5AFD25EC0BD600F1449B /* CurrencyListView.swift in Sources */,
 				E0A8FC8625E565EE001783D3 /* ContentView.swift in Sources */,
 				E0171C052602534700A0B404 /* Date+String.swift in Sources */,

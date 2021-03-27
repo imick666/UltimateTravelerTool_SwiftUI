@@ -92,7 +92,6 @@ extension WeatherViewModel {
         let data = try! JSONDecoder().decode(WeatherResponse.self, from: json)
         
         let object = WeatherViewModel(weather: data)
-        object.city = "Cupertino"
         
         return object
     }

@@ -68,7 +68,6 @@ struct WeatherDetailView: View {
                     HStack {
                         Text(day.day)
                             .frame(width: 100)
-                            .multilineTextAlignment(.leading)
                             
                         Spacer()
                         

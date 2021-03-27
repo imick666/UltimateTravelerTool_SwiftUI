@@ -15,7 +15,6 @@ final class LocationService: NSObject {
     
     private var locationManager: CLLocationManager
     private var weatherFetcher: WeatherFetcher
-//    private var userLocation: (lat: Double, lon: Double)?
     
     override init() {
         self.locationManager = CLLocationManager()
@@ -23,7 +22,7 @@ final class LocationService: NSObject {
         super.init()
         authorisations()
         self.locationManager.delegate = self
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyReduced
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
     
     public func getUserLocationWeather() {
@@ -31,10 +30,18 @@ final class LocationService: NSObject {
     }
     
     private func authorisations() {
+        switch locationManager.authorizationStatus {
+        case .denied: print("denied")
+        case .notDetermined: print("not determined")
+        case .authorizedAlways: print("always")
+        case .authorizedWhenInUse: print("when in use")
+        default: return
+        }
         guard locationManager.authorizationStatus == .authorizedWhenInUse else {
             locationManager.requestWhenInUseAuthorization()
             return
         }
+
     }
 }
 
@@ -45,8 +52,6 @@ extension LocationService: CLLocationManagerDelegate {
         let location = (lat: lastLocation.coordinate.latitude, lon: lastLocation.coordinate.longitude)
         
         locationServicePublisher.send(weatherFetcher.getWeather(for: location))
-        
-        locationManager.stopUpdatingLocation()
     }
     
 }

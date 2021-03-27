@@ -37,6 +37,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We need to use your locaton</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need to use your locaton</string>
 	<key>UIApplicationSceneManifest</key>
