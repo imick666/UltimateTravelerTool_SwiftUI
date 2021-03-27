@@ -27,7 +27,14 @@ struct SearchBar: UIViewRepresentable {
         func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
             searchBar.text = ""
             searchTerms = ""
-            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+        
+        func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+            searchBar.setShowsCancelButton(true, animated: true)
+        }
+        
+        func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+            searchBar.setShowsCancelButton(false, animated: true)
         }
     }
     
@@ -40,7 +47,6 @@ struct SearchBar: UIViewRepresentable {
         searchBar.delegate = context.coordinator
         searchBar.searchBarStyle = .minimal
         searchBar.placeholder = "search currency"
-        searchBar.setShowsCancelButton(true, animated: true)
         
         return searchBar
     }
@@ -51,7 +57,7 @@ struct SearchBar: UIViewRepresentable {
 
     
     func updateUIView(_ uiView: UISearchBar, context: Context) {
-
+        
     }
     
     

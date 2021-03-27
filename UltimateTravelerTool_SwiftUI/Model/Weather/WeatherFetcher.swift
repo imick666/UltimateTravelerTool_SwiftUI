@@ -10,22 +10,16 @@ import Combine
 
 final class WeatherFetcher {
     
-    var httpHelper: HTTPRequestHelper
+    private var httpHelper: HTTPRequestHelper
     
     init(httpHelper: HTTPRequestHelper = HTTPRequestHelper()) {
         self.httpHelper = httpHelper
     }
     
-    func getWeather(for location: (lat: String, lon: String)) -> AnyPublisher<WeatherResponse, HTTPError> {
+    func getWeather(for location: (lat: String, lon: String)) -> AnyPublisher<WeatherViewModel, HTTPError> {
         fetchWeather(for: location)
-    }
-    
-    func getIcon(for id: String) -> AnyPublisher<Data, HTTPError> {
-        guard let url = getIconUrl(for: id) else { return Fail(outputType: Data.self, failure: HTTPError.badUrl).eraseToAnyPublisher() }
-        
-        return httpHelper.fetchData(url: url)
+            .map { WeatherViewModel(weather: $0) }
             .eraseToAnyPublisher()
-            
     }
     
     private func fetchWeather(for location: (lat: String, lon: String)) -> AnyPublisher<WeatherResponse, HTTPError> {
@@ -33,16 +27,6 @@ final class WeatherFetcher {
         
         return httpHelper.fetchJson(url: url)
             .eraseToAnyPublisher()
-    }
-    
-    private func getIconUrl(for id: String) -> URL? {
-        var components = URLComponents()
-        components.scheme = "https"
-        components.host = "openweathermap.org"
-        components.path = "/img/wn/\(id)@2x.png"
-        
-        return components.url
-        
     }
     
     private func getUrl(for location: (lat: String, lon: String)) -> URL? {

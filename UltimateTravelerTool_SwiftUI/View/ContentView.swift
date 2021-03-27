@@ -10,32 +10,24 @@ import SwiftUI
 struct ContentView: View {
     
     @State var selectedTab = 0
-    @State var title = ""
     
     var body: some View {
-        NavigationView {
-            TabView(selection: $selectedTab) {
-                ExchangeView(viewModel: ExchangeViewModel())
-                    .tabItem {
-                        Text("Exchange")
-                    }.tag(0)
-                    .navigationBarHidden(true)
-                WeatherListView(viewModel: WeatherListViewModel())
-                    .tabItem {
-                        Text("Weather")
-                    }.tag(1)
-                Text("Translate View")
-                    .tabItem {
-                        Text("Translate")
-                    }.tag(2)
-            }
-            .onChange(of: selectedTab, perform: { value in
-                switch value {
-                case 1: self.title = "Weather"
-                default: self.title = ""
-                }
-            })
-            .navigationTitle(title)
+        TabView(selection: $selectedTab) {
+            ExchangeView(viewModel: ExchangeViewModel())
+                .tabItem {
+                    Text("Exchange")
+                }.tag(0)
+                .navigationBarHidden(true)
+            
+            WeatherListView()
+                .tabItem {
+                    Text("Weather")
+                }.tag(1)
+            
+            Text("Translate View")
+                .tabItem {
+                    Text("Translate")
+                }.tag(2)
         }
     }
 }

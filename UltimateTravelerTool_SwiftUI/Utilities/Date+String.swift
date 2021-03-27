@@ -16,12 +16,11 @@ extension Int {
     }
     
     func dateString(timeOffset: Int, returnStyle: ReturnStyle) -> String {
+
+        // For final App
+//        let now = Date().addingTimeInterval(Double(timeOffset))
         
-        #if DEBUG
-        let now = Date(timeIntervalSince1970: 1615917960)
-        #else
-        let now = Date().addingTimeInterval(TimeInterval(timeOffset))
-        #endif
+        let now = Date(timeIntervalSince1970: 1615917960).addingTimeInterval(Double(timeOffset))
         
         let formatter = DateFormatter()
         formatter.dateFormat = returnStyle.rawValue
@@ -32,7 +31,7 @@ extension Int {
         
         let interval = Int(date.timeIntervalSince(now))
         
-        if interval % 3600 < 1 && returnStyle == .hour { return "Now" }
+        if interval < 3600 && returnStyle == .hour { return "Now" }
         else if interval < 86400 && returnStyle == .day { return "Today" }
         else {
             switch returnStyle {
