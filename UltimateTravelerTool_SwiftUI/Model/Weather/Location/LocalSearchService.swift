@@ -15,8 +15,10 @@ final class LocalSearchService: NSObject {
     
     var cityNamePublisher = PassthroughSubject<String, Never>()
     var suggestionPublisher = PassthroughSubject<[MKLocalSearchCompletion], Never>()
+    var selectedLocationPublisher = PassthroughSubject<AnyPublisher<WeatherViewModel, HTTPError>, Never>()
     
     private lazy var localSearchCompletter = MKLocalSearchCompleter()
+    private lazy var weatherFetcher = WeatherFetcher()
     
     // MARK: - Init
     
@@ -33,7 +35,9 @@ final class LocalSearchService: NSObject {
         request.region = MKCoordinateRegion(.world)
         request.resultTypes = .address
         
-        search(from: request)
+        search(from: request) { item in
+            self.cityNamePublisher.send(item.placemark.locality ?? "N/C")
+        }
     }
     
     public func getSuggestions(for query: String) {
@@ -42,11 +46,24 @@ final class LocalSearchService: NSObject {
         localSearchCompletter.resultTypes = .address
     }
     
-    private func search(from request: MKLocalSearch.Request) {
+    public func getWeather(for completion: MKLocalSearchCompletion) {
+        let request = MKLocalSearch.Request(completion: completion)
+        request.region = MKCoordinateRegion(.world)
+        request.resultTypes = .address
+        
+        search(from: request) { item in
+            let lat = item.placemark.coordinate.latitude
+            let lon = item.placemark.coordinate.longitude
+            
+            self.selectedLocationPublisher.send(self.weatherFetcher.getWeather(for: (lat, lon)))
+        }
+    }
+    
+    private func search(from request: MKLocalSearch.Request, completionHandler: @escaping ((MKMapItem) -> Void)) {
         let search = MKLocalSearch(request: request)
         search.start { (response, _) in
             guard let response = response else { return }
-            self.cityNamePublisher.send(response.mapItems[0].placemark.locality ?? "N/C")
+            completionHandler(response.mapItems[0])
         }
     }
     

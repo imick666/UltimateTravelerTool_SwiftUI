@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WeatherSearchView: View {
     
+    @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: WeatherSearchViewModel
     
     var body: some View {
@@ -16,11 +17,17 @@ struct WeatherSearchView: View {
         
         if !viewModel.result.isEmpty {
             List(viewModel.result, id: \.self) { suggestion in
-                VStack(alignment: .leading) {
-                    Text(suggestion.title)
-                    Text(suggestion.subtitle)
-                        .foregroundColor(.secondary)
-                }
+                Button(action: {
+                    self.presentationMode.wrappedValue.dismiss()
+                    self.viewModel.getWeather(for: suggestion)
+                }, label: {
+                    VStack(alignment: .leading) {
+                        Text(suggestion.title)
+                        Text(suggestion.subtitle)
+                            .foregroundColor(.secondary)
+                    }
+                })
+                
             }
         } else {
             Spacer()
@@ -36,6 +43,6 @@ struct WeatherSearchView: View {
 
 struct WeatherSearchView_Previews: PreviewProvider {
     static var previews: some View {
-        WeatherSearchView(viewModel: WeatherSearchViewModel())
+        WeatherSearchView(viewModel: WeatherSearchViewModel(localSearchService: LocalSearchService()))
     }
 }

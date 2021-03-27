@@ -13,17 +13,26 @@ final class WeatherListViewModel: ObservableObject {
     @Published var localWeather: WeatherViewModel?
     @Published var weathers = [WeatherViewModel]()
     
-    private var locationService: LocationService
+    var localSearchService = LocalSearchService()
+    private var locationService = LocationService()
     private var subscriptions = Set<AnyCancellable>()
     
     init() {
         self.weathers = [WeatherViewModel.placeholder]
-        self.locationService = LocationService()
         
         locationService.locationServicePublisher
             .flatMap { $0 }
             .sink(receiveCompletion: { print($0) },
                   receiveValue: { self.localWeather = $0 })
+            .store(in: &subscriptions)
+        
+        localSearchService.selectedLocationPublisher
+            .flatMap { $0 }
+            .sink(receiveCompletion: { print($0) },
+                  receiveValue: {
+                    print($0)
+                    self.weathers.append($0)
+                  })
             .store(in: &subscriptions)
     }
     

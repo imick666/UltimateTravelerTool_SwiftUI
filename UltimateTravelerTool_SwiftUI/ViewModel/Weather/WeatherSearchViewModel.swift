@@ -14,10 +14,13 @@ final class WeatherSearchViewModel: ObservableObject {
     @Published var result = [MKLocalSearchCompletion]()
     @Published var serachTerms = ""
     
-    private lazy var localSearchService = LocalSearchService()
+    private var localSearchService: LocalSearchService
     private var subscriptions = Set<AnyCancellable>()
     
-    init() {
+    init(localSearchService: LocalSearchService) {
+        
+        self.localSearchService = localSearchService
+        
         $serachTerms
             .sink(receiveValue: {
                 if $0.isEmpty { self.result = [] }
@@ -25,9 +28,13 @@ final class WeatherSearchViewModel: ObservableObject {
             })
             .store(in: &subscriptions)
         
-        localSearchService.suggestionPublisher
+        self.localSearchService.suggestionPublisher
             .sink(receiveValue: { self.result = $0 })
             .store(in: &subscriptions)
+    }
+    
+    func getWeather(for suggestion: MKLocalSearchCompletion) {
+        localSearchService.getWeather(for: suggestion)
     }
     
     private func getSuggestions(from searchTerms: String) {

@@ -21,16 +21,19 @@ struct WeatherListView: View {
         NavigationView {
             
             List {
-                ForEach(viewModel.weathers) { weather in
-                    if viewModel.localWeather != nil {
-                        WeatherCellView(viewModel: viewModel.localWeather!, isCurrentLocation: true)
-                    }
-                    
-                    WeatherCellView(viewModel: weather)
-
+                
+                if viewModel.localWeather != nil {
+                    WeatherCellView(viewModel: viewModel.localWeather!, isCurrentLocation: true)
                 }
+                
+                ForEach(viewModel.weathers) { weather in
+                    WeatherCellView(viewModel: weather)
+                }
+                .onDelete(perform: { indexSet in
+                    viewModel.weathers.remove(atOffsets: indexSet)
+                })
+                
             }
-            .listStyle(PlainListStyle())
             
             .navigationTitle("Weather")
             .toolbar(content: {
@@ -45,7 +48,7 @@ struct WeatherListView: View {
             viewModel.getUserWeather()
         })
         .sheet(isPresented: $searchIsShown, content: {
-            WeatherSearchView(viewModel: WeatherSearchViewModel())
+            WeatherSearchView(viewModel: WeatherSearchViewModel(localSearchService: viewModel.localSearchService))
         })
     }
 }
