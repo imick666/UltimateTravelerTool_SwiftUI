@@ -17,22 +17,18 @@ extension Int {
     
     func dateString(timeOffset: Int, returnStyle: ReturnStyle) -> String {
 
-        // For final App
-        let now = Date().addingTimeInterval(Double(timeOffset))
+        let now = Date()
+        let date = Date(timeIntervalSince1970: Double(self))
         
-//        let now = Date(timeIntervalSince1970: 1615917960).addingTimeInterval(Double(timeOffset))
+        let calendar = Calendar.current
+        let currentDateComponents = calendar.dateComponents(in: TimeZone(secondsFromGMT: timeOffset)!, from: now)
+        let dateComponents = calendar.dateComponents(in: TimeZone(secondsFromGMT: timeOffset)!, from: date)
         
         let formatter = DateFormatter()
         formatter.dateFormat = returnStyle.rawValue
-        let timeZone = TimeZone(secondsFromGMT: timeOffset)
-        formatter.timeZone = timeZone!
         
-        let date = Date(timeIntervalSince1970: Double(self))
-        
-        let interval = Int(date.timeIntervalSince(now))
-        
-        if interval < 3600 && returnStyle == .hour { return "Now" }
-        else if interval <= 86400 && returnStyle == .day { return "Today" }
+        if currentDateComponents.hour == dateComponents.hour && returnStyle == .hour { return "Now" }
+        else if currentDateComponents.day == dateComponents.day && returnStyle == .day { return "Today" }
         else {
             switch returnStyle {
             case .day, .hourMinutes: return formatter.string(from: date)

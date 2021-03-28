@@ -22,7 +22,7 @@ final class WeatherViewModel: Identifiable, ObservableObject {
     @Published var daily = [DailyWeatherViewData]()
     @Published var isCurrentLocation = false
     
-    private var localSearchService: LocalSearchService
+    private lazy var localSearchService = LocalSearchService()
     private var subsciptions = Set<AnyCancellable>()
     
     init (weather: WeatherResponse) {
@@ -30,7 +30,6 @@ final class WeatherViewModel: Identifiable, ObservableObject {
         self.lat = weather.lat
         self.timeOffset = weather.timezoneOffset
         self.current = CurrentWeatherViewData(from: weather)
-        self.localSearchService = LocalSearchService()
         self.hourly = getHourl(from: weather)
         self.daily = getDaily(from: weather)
         
@@ -92,6 +91,7 @@ extension WeatherViewModel {
         let data = try! JSONDecoder().decode(WeatherResponse.self, from: json)
         
         let object = WeatherViewModel(weather: data)
+        object.city = "Cupertino"
         
         return object
     }

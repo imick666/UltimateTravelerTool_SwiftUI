@@ -32,16 +32,24 @@ struct WeatherListView: View {
                 .onDelete(perform: { indexSet in
                     viewModel.weathers.remove(atOffsets: indexSet)
                 })
+                .onMove(perform: { indices, newOffset in
+                    viewModel.weathers.move(fromOffsets: indices, toOffset: newOffset)
+                })
                 
             }
             
             .navigationTitle("Weather")
             .toolbar(content: {
-                Button(action: {
-                    self.searchIsShown.toggle()
-                }, label: {
-                    Image(systemName: "magnifyingglass")
-                })
+                HStack {
+                    EditButton()
+                        .disabled(viewModel.weathers.count < 1)
+                    
+                    Button(action: {
+                        self.searchIsShown.toggle()
+                    }, label: {
+                        Image(systemName: "magnifyingglass")
+                    })
+                }
             })
         }
         .onAppear(perform: {

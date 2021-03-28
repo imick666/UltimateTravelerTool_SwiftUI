@@ -11,16 +11,14 @@ import CoreLocation
 
 final class LocationService: NSObject {
     
-    var locationServicePublisher = PassthroughSubject<AnyPublisher<WeatherViewModel, HTTPError>, Never>()
+    var publisher = PassthroughSubject<AnyPublisher<WeatherViewModel, HTTPError>, Never>()
     
-    private var locationManager: CLLocationManager
-    private var weatherFetcher: WeatherFetcher
+    private lazy var locationManager = CLLocationManager()
+    private lazy var weatherFetcher = WeatherFetcher()
     
     override init() {
-        self.locationManager = CLLocationManager()
-        self.weatherFetcher = WeatherFetcher()
         super.init()
-        authorisations()
+        askAuthorisations()
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
@@ -29,14 +27,11 @@ final class LocationService: NSObject {
         locationManager.startUpdatingLocation()
     }
     
-    private func authorisations() {
-        switch locationManager.authorizationStatus {
-        case .denied: print("denied")
-        case .notDetermined: print("not determined")
-        case .authorizedAlways: print("always")
-        case .authorizedWhenInUse: print("when in use")
-        default: return
-        }
+    public func stopUserLocationWeather() {
+        locationManager.stopUpdatingLocation()
+    }
+    
+    private func askAuthorisations() {
         guard locationManager.authorizationStatus == .authorizedWhenInUse else {
             locationManager.requestWhenInUseAuthorization()
             return
@@ -51,7 +46,7 @@ extension LocationService: CLLocationManagerDelegate {
         guard let lastLocation = locations.last else { return }
         let location = (lat: lastLocation.coordinate.latitude, lon: lastLocation.coordinate.longitude)
         
-        locationServicePublisher.send(weatherFetcher.getWeather(for: location))
+        publisher.send(weatherFetcher.getWeather(for: location))
     }
     
 }

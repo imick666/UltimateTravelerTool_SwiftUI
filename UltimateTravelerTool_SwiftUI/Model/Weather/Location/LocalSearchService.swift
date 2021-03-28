@@ -51,7 +51,7 @@ final class LocalSearchService: NSObject {
         request.region = MKCoordinateRegion(.world)
         request.resultTypes = .address
         
-        search(from: request) { item in
+        search(from: request) { [unowned self] item in
             let lat = item.placemark.coordinate.latitude
             let lon = item.placemark.coordinate.longitude
             
@@ -61,13 +61,14 @@ final class LocalSearchService: NSObject {
     
     private func search(from request: MKLocalSearch.Request, completionHandler: @escaping ((MKMapItem) -> Void)) {
         let search = MKLocalSearch(request: request)
-        search.start { (response, _) in
+        search.start {  (response, _) in
             guard let response = response else { return }
             completionHandler(response.mapItems[0])
         }
     }
     
 }
+
 extension LocalSearchService: MKLocalSearchCompleterDelegate {
     
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
